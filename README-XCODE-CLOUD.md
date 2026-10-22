@@ -2,6 +2,8 @@
 
 Written for Risha, October 22, 2026. Sprint 0 of the approved Stage 6 build plan.
 
+For the exact clone, run, and test steps to follow at home, use `HOME-XCODE-CHECK.md` in this same folder. This README explains what the scaffold is and the setup behind it.
+
 ## What this is
 
 A real Xcode project for the coffee shop app: SwiftUI, iPhone, iOS 26 minimum, following your standing route. Code lives in your GitHub, Xcode Cloud builds it, TestFlight delivers it to your iPhone, and your Mac is only needed for the one time workflow setup below.
