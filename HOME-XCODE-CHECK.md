@@ -16,6 +16,19 @@ Use Xcode's clone flow:
 5. Choose where to save it. The default location is fine. If your Mac says a folder named `coffee-shop-app` already exists there, choose a different parent folder rather than overwriting anything.
 6. Wait for the clone to finish.
 
+### If Xcode asks for a GitHub token
+
+Xcode does not use a GitHub password for this sign in. If a dialog titled **Sign in to your GitHub account** asks for Account and Token, do this:
+
+1. Click **Create a Token on GitHub** in that dialog.
+2. In the GitHub page that opens, confirm you are signed in as **RISHAOFFICIAL**. Leave the scopes exactly as Xcode selected them: `admin:public_key`, `repo`, and `user`. Do not add more scopes.
+3. Name the token `Xcode on Risha Mac`. If GitHub asks for an expiration, choose 90 days.
+4. Click **Generate token**, then use GitHub's copy button on the next page. The token is shown only once.
+5. Return to Xcode. Enter `RISHAOFFICIAL` in **Account**, paste the token into **Token**, and click **Sign In**.
+6. Continue the clone.
+
+Never send the token to Muse, put it in a screenshot, or paste it anywhere except that Xcode Token field. If the token page is lost before you copy it, revoke that token in GitHub settings and generate a new one.
+
 You should now have this project file:
 
 `coffee-shop-app/CoffeeShopApp/CoffeeShopApp.xcodeproj`
