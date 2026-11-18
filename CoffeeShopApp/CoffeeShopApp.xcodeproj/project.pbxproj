@@ -10,9 +10,43 @@
 		700000000000000000000001 /* CoffeeShopAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000001 /* CoffeeShopAppApp.swift */; };
 		700000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000002 /* ContentView.swift */; };
 		700000000000000000000003 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000003 /* Theme.swift */; };
-		700000000000000000000004 /* PlaceholderViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000004 /* PlaceholderViews.swift */; };
 		700000000000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000005 /* Assets.xcassets */; };
 		700000000000000000000006 /* CoffeeShopAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000006 /* CoffeeShopAppTests.swift */; };
+		700000000000000000000007 /* WeeklyHours.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000007 /* WeeklyHours.swift */; };
+		700000000000000000000008 /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000008 /* Shop.swift */; };
+		700000000000000000000009 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000009 /* Visit.swift */; };
+		700000000000000000000010 /* WantToGoEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000010 /* WantToGoEntry.swift */; };
+		700000000000000000000011 /* Companion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000011 /* Companion.swift */; };
+		700000000000000000000012 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000012 /* UserSettings.swift */; };
+		700000000000000000000013 /* DismissedArrival.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000013 /* DismissedArrival.swift */; };
+		700000000000000000000014 /* SyncSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000014 /* SyncSupport.swift */; };
+		700000000000000000000015 /* ShopFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000015 /* ShopFilter.swift */; };
+		700000000000000000000016 /* SupabaseDirectoryClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000016 /* SupabaseDirectoryClient.swift */; };
+		700000000000000000000017 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000017 /* SampleData.swift */; };
+		700000000000000000000018 /* DirectoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000018 /* DirectoryStore.swift */; };
+		700000000000000000000019 /* VisitStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000019 /* VisitStore.swift */; };
+		700000000000000000000020 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000020 /* LocationService.swift */; };
+		700000000000000000000021 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000021 /* NotificationService.swift */; };
+		700000000000000000000022 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000022 /* AppDelegate.swift */; };
+		700000000000000000000023 /* CheckInManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000023 /* CheckInManager.swift */; };
+		700000000000000000000024 /* GlassViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000024 /* GlassViews.swift */; };
+		700000000000000000000025 /* FirstLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000025 /* FirstLaunchView.swift */; };
+		700000000000000000000026 /* DiscoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000026 /* DiscoverView.swift */; };
+		700000000000000000000027 /* ShopDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000027 /* ShopDetailView.swift */; };
+		700000000000000000000028 /* FiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000028 /* FiltersView.swift */; };
+		700000000000000000000029 /* PlaceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000029 /* PlaceCardView.swift */; };
+		700000000000000000000030 /* CheckInPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000030 /* CheckInPromptView.swift */; };
+		700000000000000000000031 /* CorrectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000031 /* CorrectionView.swift */; };
+		700000000000000000000032 /* ManualCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000032 /* ManualCheckInView.swift */; };
+		700000000000000000000033 /* VisitedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000033 /* VisitedView.swift */; };
+		700000000000000000000034 /* VisitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000034 /* VisitDetailView.swift */; };
+		700000000000000000000035 /* WantToGoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000035 /* WantToGoView.swift */; };
+		700000000000000000000036 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000036 /* SettingsView.swift */; };
+		700000000000000000000037 /* detroit-shops-batch-1.json in Resources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000037 /* detroit-shops-batch-1.json */; };
+		700000000000000000000038 /* WeeklyHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000038 /* WeeklyHoursTests.swift */; };
+		700000000000000000000039 /* ShopFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000039 /* ShopFilterTests.swift */; };
+		700000000000000000000040 /* VisitStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000040 /* VisitStoreTests.swift */; };
+		700000000000000000000041 /* SyncSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000041 /* SyncSupportTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,9 +65,43 @@
 		600000000000000000000001 /* CoffeeShopAppApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoffeeShopAppApp.swift; sourceTree = "<group>"; };
 		600000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		600000000000000000000003 /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
-		600000000000000000000004 /* PlaceholderViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaceholderViews.swift; sourceTree = "<group>"; };
 		600000000000000000000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		600000000000000000000006 /* CoffeeShopAppTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoffeeShopAppTests.swift; sourceTree = "<group>"; };
+		600000000000000000000007 /* WeeklyHours.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyHours.swift; sourceTree = "<group>"; };
+		600000000000000000000008 /* Shop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shop.swift; sourceTree = "<group>"; };
+		600000000000000000000009 /* Visit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visit.swift; sourceTree = "<group>"; };
+		600000000000000000000010 /* WantToGoEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WantToGoEntry.swift; sourceTree = "<group>"; };
+		600000000000000000000011 /* Companion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Companion.swift; sourceTree = "<group>"; };
+		600000000000000000000012 /* UserSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
+		600000000000000000000013 /* DismissedArrival.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissedArrival.swift; sourceTree = "<group>"; };
+		600000000000000000000014 /* SyncSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncSupport.swift; sourceTree = "<group>"; };
+		600000000000000000000015 /* ShopFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopFilter.swift; sourceTree = "<group>"; };
+		600000000000000000000016 /* SupabaseDirectoryClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupabaseDirectoryClient.swift; sourceTree = "<group>"; };
+		600000000000000000000017 /* SampleData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		600000000000000000000018 /* DirectoryStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryStore.swift; sourceTree = "<group>"; };
+		600000000000000000000019 /* VisitStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitStore.swift; sourceTree = "<group>"; };
+		600000000000000000000020 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		600000000000000000000021 /* NotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		600000000000000000000022 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		600000000000000000000023 /* CheckInManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckInManager.swift; sourceTree = "<group>"; };
+		600000000000000000000024 /* GlassViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlassViews.swift; sourceTree = "<group>"; };
+		600000000000000000000025 /* FirstLaunchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstLaunchView.swift; sourceTree = "<group>"; };
+		600000000000000000000026 /* DiscoverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
+		600000000000000000000027 /* ShopDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopDetailView.swift; sourceTree = "<group>"; };
+		600000000000000000000028 /* FiltersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FiltersView.swift; sourceTree = "<group>"; };
+		600000000000000000000029 /* PlaceCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaceCardView.swift; sourceTree = "<group>"; };
+		600000000000000000000030 /* CheckInPromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckInPromptView.swift; sourceTree = "<group>"; };
+		600000000000000000000031 /* CorrectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorrectionView.swift; sourceTree = "<group>"; };
+		600000000000000000000032 /* ManualCheckInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualCheckInView.swift; sourceTree = "<group>"; };
+		600000000000000000000033 /* VisitedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitedView.swift; sourceTree = "<group>"; };
+		600000000000000000000034 /* VisitDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitDetailView.swift; sourceTree = "<group>"; };
+		600000000000000000000035 /* WantToGoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WantToGoView.swift; sourceTree = "<group>"; };
+		600000000000000000000036 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		600000000000000000000037 /* detroit-shops-batch-1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = detroit-shops-batch-1.json; sourceTree = "<group>"; };
+		600000000000000000000038 /* WeeklyHoursTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyHoursTests.swift; sourceTree = "<group>"; };
+		600000000000000000000039 /* ShopFilterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShopFilterTests.swift; sourceTree = "<group>"; };
+		600000000000000000000040 /* VisitStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitStoreTests.swift; sourceTree = "<group>"; };
+		600000000000000000000041 /* SyncSupportTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncSupportTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +148,10 @@
 				100000000000000000000006 /* Views */,
 				100000000000000000000007 /* Components */,
 				600000000000000000000005 /* Assets.xcassets */,
+				100000000000000000000008 /* Models */,
+				100000000000000000000009 /* Data */,
+				100000000000000000000010 /* Services */,
+				100000000000000000000011 /* Resources */,
 			);
 			path = CoffeeShopApp;
 			sourceTree = "<group>";
@@ -88,6 +160,10 @@
 			isa = PBXGroup;
 			children = (
 				600000000000000000000006 /* CoffeeShopAppTests.swift */,
+				600000000000000000000038 /* WeeklyHoursTests.swift */,
+				600000000000000000000039 /* ShopFilterTests.swift */,
+				600000000000000000000040 /* VisitStoreTests.swift */,
+				600000000000000000000041 /* SyncSupportTests.swift */,
 			);
 			path = CoffeeShopAppTests;
 			sourceTree = "<group>";
@@ -95,7 +171,18 @@
 		100000000000000000000006 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				600000000000000000000004 /* PlaceholderViews.swift */,
+				600000000000000000000025 /* FirstLaunchView.swift */,
+				600000000000000000000026 /* DiscoverView.swift */,
+				600000000000000000000027 /* ShopDetailView.swift */,
+				600000000000000000000028 /* FiltersView.swift */,
+				600000000000000000000029 /* PlaceCardView.swift */,
+				600000000000000000000030 /* CheckInPromptView.swift */,
+				600000000000000000000031 /* CorrectionView.swift */,
+				600000000000000000000032 /* ManualCheckInView.swift */,
+				600000000000000000000033 /* VisitedView.swift */,
+				600000000000000000000034 /* VisitDetailView.swift */,
+				600000000000000000000035 /* WantToGoView.swift */,
+				600000000000000000000036 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -104,8 +191,55 @@
 			isa = PBXGroup;
 			children = (
 				600000000000000000000003 /* Theme.swift */,
+				600000000000000000000024 /* GlassViews.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		100000000000000000000008 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				600000000000000000000007 /* WeeklyHours.swift */,
+				600000000000000000000008 /* Shop.swift */,
+				600000000000000000000009 /* Visit.swift */,
+				600000000000000000000010 /* WantToGoEntry.swift */,
+				600000000000000000000011 /* Companion.swift */,
+				600000000000000000000012 /* UserSettings.swift */,
+				600000000000000000000013 /* DismissedArrival.swift */,
+				600000000000000000000014 /* SyncSupport.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		100000000000000000000009 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				600000000000000000000015 /* ShopFilter.swift */,
+				600000000000000000000016 /* SupabaseDirectoryClient.swift */,
+				600000000000000000000017 /* SampleData.swift */,
+				600000000000000000000018 /* DirectoryStore.swift */,
+				600000000000000000000019 /* VisitStore.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		100000000000000000000010 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				600000000000000000000020 /* LocationService.swift */,
+				600000000000000000000021 /* NotificationService.swift */,
+				600000000000000000000022 /* AppDelegate.swift */,
+				600000000000000000000023 /* CheckInManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		100000000000000000000011 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				600000000000000000000037 /* detroit-shops-batch-1.json */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -190,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				700000000000000000000005 /* Assets.xcassets in Resources */,
+				700000000000000000000037 /* detroit-shops-batch-1.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +345,36 @@
 				700000000000000000000001 /* CoffeeShopAppApp.swift in Sources */,
 				700000000000000000000002 /* ContentView.swift in Sources */,
 				700000000000000000000003 /* Theme.swift in Sources */,
-				700000000000000000000004 /* PlaceholderViews.swift in Sources */,
+				700000000000000000000007 /* WeeklyHours.swift in Sources */,
+				700000000000000000000008 /* Shop.swift in Sources */,
+				700000000000000000000009 /* Visit.swift in Sources */,
+				700000000000000000000010 /* WantToGoEntry.swift in Sources */,
+				700000000000000000000011 /* Companion.swift in Sources */,
+				700000000000000000000012 /* UserSettings.swift in Sources */,
+				700000000000000000000013 /* DismissedArrival.swift in Sources */,
+				700000000000000000000014 /* SyncSupport.swift in Sources */,
+				700000000000000000000015 /* ShopFilter.swift in Sources */,
+				700000000000000000000016 /* SupabaseDirectoryClient.swift in Sources */,
+				700000000000000000000017 /* SampleData.swift in Sources */,
+				700000000000000000000018 /* DirectoryStore.swift in Sources */,
+				700000000000000000000019 /* VisitStore.swift in Sources */,
+				700000000000000000000020 /* LocationService.swift in Sources */,
+				700000000000000000000021 /* NotificationService.swift in Sources */,
+				700000000000000000000022 /* AppDelegate.swift in Sources */,
+				700000000000000000000023 /* CheckInManager.swift in Sources */,
+				700000000000000000000024 /* GlassViews.swift in Sources */,
+				700000000000000000000025 /* FirstLaunchView.swift in Sources */,
+				700000000000000000000026 /* DiscoverView.swift in Sources */,
+				700000000000000000000027 /* ShopDetailView.swift in Sources */,
+				700000000000000000000028 /* FiltersView.swift in Sources */,
+				700000000000000000000029 /* PlaceCardView.swift in Sources */,
+				700000000000000000000030 /* CheckInPromptView.swift in Sources */,
+				700000000000000000000031 /* CorrectionView.swift in Sources */,
+				700000000000000000000032 /* ManualCheckInView.swift in Sources */,
+				700000000000000000000033 /* VisitedView.swift in Sources */,
+				700000000000000000000034 /* VisitDetailView.swift in Sources */,
+				700000000000000000000035 /* WantToGoView.swift in Sources */,
+				700000000000000000000036 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +383,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				700000000000000000000006 /* CoffeeShopAppTests.swift in Sources */,
+				700000000000000000000038 /* WeeklyHoursTests.swift in Sources */,
+				700000000000000000000039 /* ShopFilterTests.swift in Sources */,
+				700000000000000000000040 /* VisitStoreTests.swift in Sources */,
+				700000000000000000000041 /* SyncSupportTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +522,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Coffee Shop App";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Always access lets check in prompts appear when the app is closed. Your location never leaves this phone for prompts.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Location is used to show nearby coffee shops, center the map, and offer check in prompts when you arrive at a shop.";
+				INFOPLIST_KEY_UIBackgroundModes = ( location, );
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -379,6 +550,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Coffee Shop App";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Always access lets check in prompts appear when the app is closed. Your location never leaves this phone for prompts.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Location is used to show nearby coffee shops, center the map, and offer check in prompts when you arrive at a shop.";
+				INFOPLIST_KEY_UIBackgroundModes = ( location, );
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;

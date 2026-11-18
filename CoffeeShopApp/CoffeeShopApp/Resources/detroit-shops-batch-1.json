@@ -1,0 +1,465 @@
+{
+    "batch": 1,
+    "generated": "2026-11-18",
+    "notes": "Verified Detroit coffee shops, batch 1. Every shop was checked against at least two live sources on Nov 18, 2026 (shop website or place listing plus an independent directory). Hours conflicts are recorded in 06-build/directory-collection.md. No photos: no photo rights have been cleared for any shop yet. Coordinates were verified by geocoding each street address and cross checked against the place listings. Kind rule: chain means the brand operates more than one cafe location; independent means a single location. That rule is Risha's to change; see the collection doc.",
+    "shops": [
+        {
+            "address": "1948 Division St, Detroit, MI 48207",
+            "hours": {
+                "fri": {
+                    "close": "17:00",
+                    "open": "07:00"
+                },
+                "mon": {
+                    "close": "17:00",
+                    "open": "07:00"
+                },
+                "sat": {
+                    "close": "16:00",
+                    "open": "07:00"
+                },
+                "sun": {
+                    "close": "16:00",
+                    "open": "08:00"
+                },
+                "thu": {
+                    "close": "17:00",
+                    "open": "07:00"
+                },
+                "tue": {
+                    "close": "17:00",
+                    "open": "07:00"
+                },
+                "wed": {
+                    "close": "17:00",
+                    "open": "07:00"
+                }
+            },
+            "id": "3570afb5-26f7-4de3-a289-f92e9ed7f80a",
+            "is_published": true,
+            "kind": "independent",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.3488,
+            "longitude": -83.03606,
+            "name": "Anthology Coffee",
+            "neighborhood": "Eastern Market",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "anthologycoffee.com listing, Corner, Giftly, vereda.guide",
+            "tags": [
+                "roaster"
+            ]
+        },
+        {
+            "address": "1413 Farmer St, Detroit, MI 48226",
+            "hours": {
+                "fri": {
+                    "close": "16:00",
+                    "open": "08:00"
+                },
+                "mon": {
+                    "close": "16:00",
+                    "open": "08:00"
+                },
+                "sat": {
+                    "close": "18:00",
+                    "open": "08:00"
+                },
+                "sun": {
+                    "close": "16:00",
+                    "open": "08:00"
+                },
+                "thu": {
+                    "close": "16:00",
+                    "open": "08:00"
+                },
+                "tue": {
+                    "close": "16:00",
+                    "open": "08:00"
+                },
+                "wed": {
+                    "close": "16:00",
+                    "open": "08:00"
+                }
+            },
+            "id": "a582270f-c6b7-4137-8eb1-b1b2aaf922d8",
+            "is_published": true,
+            "kind": "chain",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.33464,
+            "longitude": -83.04805,
+            "name": "Madcap Coffee",
+            "neighborhood": "Downtown",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "madcapcoffee.com listing, worldcoffeemap.com (verified Oct 13, 2026), Wanderlog, Roadtrippers",
+            "tags": [
+                "roaster"
+            ]
+        },
+        {
+            "address": "1220 Griswold St, Detroit, MI 48226",
+            "hours": {
+                "fri": {
+                    "close": "21:00",
+                    "open": "07:00"
+                },
+                "mon": {
+                    "close": "21:00",
+                    "open": "07:00"
+                },
+                "sat": {
+                    "close": "21:00",
+                    "open": "07:00"
+                },
+                "sun": {
+                    "close": "20:00",
+                    "open": "09:00"
+                },
+                "thu": {
+                    "close": "21:00",
+                    "open": "07:00"
+                },
+                "tue": {
+                    "close": "21:00",
+                    "open": "07:00"
+                },
+                "wed": {
+                    "close": "21:00",
+                    "open": "07:00"
+                }
+            },
+            "id": "6825c1ef-78f9-42ce-a45b-d7d15611a59a",
+            "is_published": true,
+            "kind": "chain",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.33301,
+            "longitude": -83.04901,
+            "name": "Dessert Oasis Coffee Roasters",
+            "neighborhood": "Downtown",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "Shop website docr.coffee (Detroit cafe page), Wanderlog, Roadtrippers",
+            "tags": [
+                "roaster"
+            ]
+        },
+        {
+            "address": "9321 Rosa Parks Blvd, Detroit, MI 48206",
+            "hours": {
+                "fri": {
+                    "close": "21:00",
+                    "open": "08:00"
+                },
+                "mon": null,
+                "sat": {
+                    "close": "21:00",
+                    "open": "09:00"
+                },
+                "sun": {
+                    "close": "18:00",
+                    "open": "09:00"
+                },
+                "thu": {
+                    "close": "21:00",
+                    "open": "08:00"
+                },
+                "tue": {
+                    "close": "21:00",
+                    "open": "08:00"
+                },
+                "wed": {
+                    "close": "21:00",
+                    "open": "08:00"
+                }
+            },
+            "id": "59237d90-a458-4d9f-9083-4285e7efaf42",
+            "is_published": true,
+            "kind": "independent",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.37752,
+            "longitude": -83.10053,
+            "name": "The Congregation",
+            "neighborhood": "Boston Edison",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "thecongregationdetroit.com listing, TripAdvisor, Wanderlog, restaurantji (updated Nov 12, 2026)",
+            "tags": []
+        },
+        {
+            "address": "660 Woodward Ave, Detroit, MI 48226",
+            "hours": {
+                "fri": {
+                    "close": "17:30",
+                    "open": "07:00"
+                },
+                "mon": {
+                    "close": "17:30",
+                    "open": "07:00"
+                },
+                "sat": {
+                    "close": "19:00",
+                    "open": "09:00"
+                },
+                "sun": {
+                    "close": "17:00",
+                    "open": "09:00"
+                },
+                "thu": {
+                    "close": "17:30",
+                    "open": "07:00"
+                },
+                "tue": {
+                    "close": "17:30",
+                    "open": "07:00"
+                },
+                "wed": {
+                    "close": "17:30",
+                    "open": "07:00"
+                }
+            },
+            "id": "9b919280-35e1-4721-90b2-9533b5feded8",
+            "is_published": true,
+            "kind": "chain",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.33124,
+            "longitude": -83.04566,
+            "name": "Roasting Plant Detroit",
+            "neighborhood": "Downtown",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "Shop website roastingplant.com/locations, Wanderlog, TripAdvisor, Roadtrippers",
+            "tags": [
+                "roaster"
+            ]
+        },
+        {
+            "address": "2124 Michigan Ave, Detroit, MI 48216",
+            "hours": {
+                "fri": {
+                    "close": "18:00",
+                    "open": "07:00"
+                },
+                "mon": {
+                    "close": "17:00",
+                    "open": "07:00"
+                },
+                "sat": {
+                    "close": "18:00",
+                    "open": "08:00"
+                },
+                "sun": {
+                    "close": "16:00",
+                    "open": "08:00"
+                },
+                "thu": {
+                    "close": "17:00",
+                    "open": "07:00"
+                },
+                "tue": {
+                    "close": "17:00",
+                    "open": "07:00"
+                },
+                "wed": {
+                    "close": "17:00",
+                    "open": "07:00"
+                }
+            },
+            "id": "3f445f00-5757-4375-aad2-684550103fdf",
+            "is_published": true,
+            "kind": "independent",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.33165,
+            "longitude": -83.0756,
+            "name": "Alba",
+            "neighborhood": "Corktown",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "alba-coffee.com listing, Wanderlog, Shooki review (June 2026), restaurantji",
+            "tags": []
+        },
+        {
+            "address": "1236 Michigan Ave, Detroit, MI 48226",
+            "hours": {
+                "fri": {
+                    "close": "15:00",
+                    "open": "07:00"
+                },
+                "mon": {
+                    "close": "15:00",
+                    "open": "07:00"
+                },
+                "sat": {
+                    "close": "15:00",
+                    "open": "07:00"
+                },
+                "sun": {
+                    "close": "15:00",
+                    "open": "07:00"
+                },
+                "thu": {
+                    "close": "15:00",
+                    "open": "07:00"
+                },
+                "tue": {
+                    "close": "15:00",
+                    "open": "07:00"
+                },
+                "wed": {
+                    "close": "15:00",
+                    "open": "07:00"
+                }
+            },
+            "id": "5645eb38-9b36-4f5d-ad99-abfe1b013a23",
+            "is_published": true,
+            "kind": "chain",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.33177,
+            "longitude": -83.0629,
+            "name": "James Oliver Coffee",
+            "neighborhood": "Corktown",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "Shop website jamesolivercoffee.com/cafe, Wanderlog, Shooki review (May 2026), restaurantji",
+            "tags": [
+                "roaster"
+            ]
+        },
+        {
+            "address": "14447 E Jefferson Ave, Detroit, MI 48215",
+            "hours": {
+                "fri": {
+                    "close": "14:00",
+                    "open": "07:00"
+                },
+                "mon": {
+                    "close": "14:00",
+                    "open": "07:00"
+                },
+                "sat": {
+                    "close": "15:00",
+                    "open": "08:00"
+                },
+                "sun": {
+                    "close": "15:00",
+                    "open": "08:00"
+                },
+                "thu": {
+                    "close": "14:00",
+                    "open": "07:00"
+                },
+                "tue": {
+                    "close": "14:00",
+                    "open": "07:00"
+                },
+                "wed": {
+                    "close": "14:00",
+                    "open": "07:00"
+                }
+            },
+            "id": "d923308c-1d32-4906-aa64-ce8570ca4635",
+            "is_published": true,
+            "kind": "chain",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.37358,
+            "longitude": -82.94344,
+            "name": "Yellow Light Coffee and Donuts",
+            "neighborhood": "Jefferson-Chalmers",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "yellowlightdetroit.com listing, Wanderlog, ezCater, restaurantji",
+            "tags": [
+                "roaster"
+            ]
+        },
+        {
+            "address": "445 W Forest Ave, Detroit, MI 48201",
+            "hours": {
+                "fri": {
+                    "close": "23:00",
+                    "open": "08:00"
+                },
+                "mon": {
+                    "close": "17:00",
+                    "open": "08:00"
+                },
+                "sat": {
+                    "close": "23:00",
+                    "open": "08:00"
+                },
+                "sun": {
+                    "close": "23:00",
+                    "open": "08:00"
+                },
+                "thu": {
+                    "close": "23:00",
+                    "open": "08:00"
+                },
+                "tue": {
+                    "close": "17:00",
+                    "open": "08:00"
+                },
+                "wed": {
+                    "close": "23:00",
+                    "open": "08:00"
+                }
+            },
+            "id": "fc13c154-4b35-4255-b657-e1d976c1acd6",
+            "is_published": true,
+            "kind": "independent",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.35325,
+            "longitude": -83.06616,
+            "name": "Cafe Sous Terre",
+            "neighborhood": "Midtown",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "Shop website cafesousterre.com/faq, Wanderlog, restaurantji",
+            "tags": []
+        },
+        {
+            "address": "2517 Russell St, Detroit, MI 48207",
+            "hours": {
+                "fri": {
+                    "close": "15:00",
+                    "open": "08:00"
+                },
+                "mon": {
+                    "close": "15:00",
+                    "open": "08:00"
+                },
+                "sat": {
+                    "close": "15:00",
+                    "open": "08:00"
+                },
+                "sun": null,
+                "thu": {
+                    "close": "15:00",
+                    "open": "08:00"
+                },
+                "tue": {
+                    "close": "15:00",
+                    "open": "08:00"
+                },
+                "wed": {
+                    "close": "15:00",
+                    "open": "08:00"
+                }
+            },
+            "id": "3d1c6c89-5376-4334-9ad1-19684f58d2a2",
+            "is_published": true,
+            "kind": "independent",
+            "last_verified_date": "2026-11-18",
+            "latitude": 42.34616,
+            "longitude": -83.04047,
+            "name": "Germack Roasting Co.",
+            "neighborhood": "Eastern Market",
+            "photo_rights": null,
+            "photo_url": null,
+            "source": "restaurantji (updated Nov 13, 2026), Eastern Market Instagram (Sept 2026)",
+            "tags": [
+                "roaster"
+            ]
+        }
+    ]
+}
