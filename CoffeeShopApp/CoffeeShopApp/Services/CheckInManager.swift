@@ -44,6 +44,7 @@ final class CheckInManager: ObservableObject {
 
     private let context: ModelContext
     private let visitStore: VisitStore
+    private let wantToGoStore: WantToGoStore
     private let locationService: LocationService
     private let notificationService: NotificationService
 
@@ -54,6 +55,7 @@ final class CheckInManager: ObservableObject {
     ) {
         self.context = context
         self.visitStore = VisitStore(context: context)
+        self.wantToGoStore = WantToGoStore(context: context)
         self.locationService = locationService
         self.notificationService = notificationService
 
@@ -283,9 +285,42 @@ final class CheckInManager: ObservableObject {
         save(shop: shop, source: .manual)
     }
 
+    // MARK: - Want To Go check in (Sprint 5, Story S12)
+
+    /// Checks in from a Want To Go card. The visit saves first; only then
+    /// does the shop leave Want To Go, so a failed save never loses the
+    /// saved shop. A shop already visited today still leaves the list,
+    /// because it is already in Visited. A shared shop outside the
+    /// directory saves as a typed in visit from the entry's own fields.
+    func checkInFromWantToGo(_ entry: WantToGoEntry) {
+        if let shop = fetchShop(id: entry.shopID) {
+            if save(shop: shop, source: .manual) {
+                wantToGoStore.remove(entry)
+            }
+            return
+        }
+        do {
+            let visit = try visitStore.saveUnverifiedVisit(
+                name: entry.shopName,
+                address: entry.address,
+                neighborhood: entry.neighborhood,
+                coordinate: locationService.lastLocation?.coordinate
+            )
+            savedVisit = visit
+            wantToGoStore.remove(entry)
+            refreshRecovery()
+        } catch {
+            print("Check in failed: \(error.localizedDescription)")
+        }
+    }
+
     // MARK: - Shared save path
 
-    private func save(shop: Shop, source: VisitSource) {
+    /// Saves a check in and reports whether it worked, so the Want To Go
+    /// flow only removes the entry when the visit is actually saved.
+    /// A same day duplicate counts as worked: the visit already exists.
+    @discardableResult
+    private func save(shop: Shop, source: VisitSource) -> Bool {
         do {
             let result = try visitStore.saveCheckIn(shop: shop, source: source)
             if result.wasDuplicate {
@@ -294,8 +329,10 @@ final class CheckInManager: ObservableObject {
                 savedVisit = result.visit
             }
             refreshRecovery()
+            return true
         } catch {
             print("Check in failed: \(error.localizedDescription)")
+            return false
         }
     }
 

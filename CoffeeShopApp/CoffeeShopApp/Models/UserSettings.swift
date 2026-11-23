@@ -9,6 +9,9 @@ final class UserSettings {
     var hasCompletedFirstLaunch: Bool
     var autoCheckInPromptsEnabled: Bool
     var shareNotesByDefault: Bool
+    /// The name shown as "Shared by" on a shared shop, remembered from
+    /// the last share. Nil means shares go out without a name.
+    var sharerName: String?
     var lastPromptDate: Date?
     var lastPromptShopName: String?
     var updatedAt: Date
@@ -18,6 +21,7 @@ final class UserSettings {
         hasCompletedFirstLaunch: Bool = false,
         autoCheckInPromptsEnabled: Bool = true,
         shareNotesByDefault: Bool = false,
+        sharerName: String? = nil,
         lastPromptDate: Date? = nil,
         lastPromptShopName: String? = nil,
         updatedAt: Date = Date()
@@ -26,6 +30,7 @@ final class UserSettings {
         self.hasCompletedFirstLaunch = hasCompletedFirstLaunch
         self.autoCheckInPromptsEnabled = autoCheckInPromptsEnabled
         self.shareNotesByDefault = shareNotesByDefault
+        self.sharerName = sharerName
         self.lastPromptDate = lastPromptDate
         self.lastPromptShopName = lastPromptShopName
         self.updatedAt = updatedAt

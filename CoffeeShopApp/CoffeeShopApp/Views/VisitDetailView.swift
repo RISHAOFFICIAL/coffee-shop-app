@@ -3,18 +3,25 @@ import SwiftData
 import MapKit
 import UIKit
 
-/// Visit detail (Screen 12), Sprint 4: the shop, the date and time, the
+/// Visit detail (Screen 12), Sprint 5: the shop, the date and time, the
 /// neighborhood, how the visit was saved, and every memory jogger that
 /// was added, in the same order as the Add Memory sheet. Edit reopens
-/// that sheet for the same visit (Story S15). Delete and share arrive
-/// with Sprints 5 and 6; this screen shows only what exists, with no
-/// dead buttons.
+/// that sheet for the same visit (Story S15). Share opens the share
+/// preview (Story S11); Directions and Check In Again are here too; and
+/// the Visits To This Shop section is the entry point to the shop's full
+/// history. Delete arrives with Sprint 6 (Story S13); this screen shows
+/// only what exists, with no dead buttons.
 struct VisitDetailView: View {
     let visit: Visit
 
     @Query private var allCompanions: [Companion]
+    @Query private var allVisits: [Visit]
+    @Query private var shops: [Shop]
+    @Query private var settingsRows: [UserSettings]
+    @EnvironmentObject private var checkInManager: CheckInManager
 
     @State private var showMemory = false
+    @State private var showShare = false
     @State private var photoImage: UIImage?
 
     /// Companion names for this visit, in the order they were added.
@@ -22,6 +29,22 @@ struct VisitDetailView: View {
         visit.companionIDs.compactMap { id in
             allCompanions.first(where: { $0.id == id })?.name
         }
+    }
+
+    /// Every visit to this shop, newest first. The full per shop history
+    /// screen is Story S16, post version 1; this section is the entry
+    /// point to it, and each row opens that visit.
+    private var shopVisits: [Visit] {
+        allVisits
+            .filter { $0.shopID == visit.shopID }
+            .sorted { $0.checkedInAt > $1.checkedInAt }
+    }
+
+    /// The directory shop for this visit, for directions and Check In
+    /// Again. Nil only when the shop row is missing, which should not
+    /// happen for a saved visit.
+    private var shop: Shop? {
+        shops.first { $0.id == visit.shopID }
     }
 
     var body: some View {
@@ -55,6 +78,10 @@ struct VisitDetailView: View {
                             .font(.coffeeBody)
                             .foregroundStyle(.appText)
                     }
+                }
+                actions
+                if shopVisits.count > 1 {
+                    historySection
                 }
                 if visit.joggerCount == 0 {
                     Button("Add A Memory") {
@@ -126,7 +153,13 @@ struct VisitDetailView: View {
         .navigationTitle("Visit")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button {
+                    showShare = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .accessibilityLabel("Share this shop")
                 Button("Edit") {
                     showMemory = true
                 }
@@ -135,6 +168,14 @@ struct VisitDetailView: View {
         }
         .sheet(isPresented: $showMemory) {
             AddMemoryView(visit: visit)
+        }
+        .sheet(isPresented: $showShare) {
+            SharePreviewView(
+                visit: visit,
+                coordinate: shop?.coordinate,
+                includeNoteDefault: settingsRows.first?.shareNotesByDefault ?? false,
+                sharerNameDefault: settingsRows.first?.sharerName ?? ""
+            )
         }
         .task(id: visit.photoFilename) {
             if let filename = visit.photoFilename {
@@ -153,6 +194,111 @@ struct VisitDetailView: View {
             Text(text)
                 .font(.coffeeBody)
                 .foregroundStyle(.appText)
+        }
+    }
+
+    // MARK: - Actions and history (Sprint 5)
+
+    private var actions: some View {
+        VStack(spacing: 12) {
+            Button("Share This Shop") {
+                showShare = true
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            Button("Directions", action: openDirections)
+                .buttonStyle(SecondaryButtonStyle())
+            if let shop {
+                Button("Check In Again") {
+                    checkInManager.manualCheckIn(shop: shop)
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            }
+        }
+    }
+
+    /// Every visit to this shop, newest first, each row opening that
+    /// visit. The current visit is marked so the list reads as history,
+    /// not as duplicates.
+    private var historySection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Visits to this shop")
+                .font(.coffeeCardTitle)
+                .foregroundStyle(.appText)
+            Text(historySummary)
+                .font(.coffeeSecondary)
+                .foregroundStyle(.appTextSecondary)
+            ForEach(shopVisits) { shopVisit in
+                if shopVisit.id == visit.id {
+                    historyRow(for: shopVisit)
+                } else {
+                    NavigationLink(value: shopVisit.id) {
+                        historyRow(for: shopVisit)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    /// One row in the history list. Other visits get a chevron and
+    /// navigate; the current visit is plain text, because tapping it
+    /// would only open the screen already showing.
+    private func historyRow(for shopVisit: Visit) -> some View {
+        HStack {
+            Text(historyDate(for: shopVisit))
+                .font(.coffeeBody)
+                .foregroundStyle(.appText)
+            if shopVisit.id == visit.id {
+                Text("This visit")
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(.appAccent)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.appChipBackground, in: Capsule())
+            }
+            Spacer()
+            if let rating = shopVisit.rating {
+                HStack(spacing: 2) {
+                    Image(systemName: "star.fill")
+                        .font(.caption)
+                        .foregroundStyle(.appAccent)
+                    Text("\(rating)")
+                        .font(.coffeeSecondary.weight(.semibold))
+                        .foregroundStyle(.appText)
+                }
+            }
+            if shopVisit.id != visit.id {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.appTextSecondary)
+            }
+        }
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
+    }
+
+    /// "Visited 3 times, first on Nov 2, 2026."
+    private var historySummary: String {
+        let count = shopVisits.count
+        guard let first = shopVisits.last else { return "" }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return "Visited \(count) times, first on \(formatter.string(from: first.checkedInAt))."
+    }
+
+    private func historyDate(for shopVisit: Visit) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: shopVisit.checkedInAt)
+    }
+
+    private func openDirections() {
+        if let shop {
+            Directions.open(coordinate: shop.coordinate, name: shop.name)
+        } else if !visit.address.isEmpty {
+            Directions.open(address: visit.address, name: visit.shopName)
         }
     }
 

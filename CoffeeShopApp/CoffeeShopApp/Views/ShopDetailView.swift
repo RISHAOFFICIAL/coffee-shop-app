@@ -1,16 +1,23 @@
 import SwiftUI
-import MapKit
+import SwiftData
 
 /// Shop detail (Screen 5): name, address, neighborhood, weekly hours,
 /// independent or chain, tags, a cleared photo where one exists, and the
-/// two main actions: Directions and Check In Here. The verification line
-/// shows where the data came from and when it was last checked, so the
-/// directory never pretends to be fresher than it is.
+/// main actions: Directions, Check In Here, and Save to Want To Go. The
+/// verification line shows where the data came from and when it was last
+/// checked, so the directory never pretends to be fresher than it is.
 struct ShopDetailView: View {
     let shop: Shop
 
+    @Query private var wantToGoEntries: [WantToGoEntry]
     @EnvironmentObject private var checkInManager: CheckInManager
     @EnvironmentObject private var locationService: LocationService
+    @Environment(\.modelContext) private var modelContext
+
+    /// True when this shop is already on the Want To Go list.
+    private var isSavedToWantToGo: Bool {
+        wantToGoEntries.contains { $0.shopID == shop.id }
+    }
 
     var body: some View {
         ScrollView {
@@ -115,6 +122,21 @@ struct ShopDetailView: View {
                 checkInManager.manualCheckIn(shop: shop)
             }
             .buttonStyle(SecondaryButtonStyle())
+            Button(isSavedToWantToGo ? "Saved to Want To Go" : "Save to Want To Go") {
+                toggleWantToGo()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+    }
+
+    /// Saves the shop to Want To Go, or removes it when it is already
+    /// saved. Saving never creates a visit; only a check in does.
+    private func toggleWantToGo() {
+        let store = WantToGoStore(context: modelContext)
+        if let entry = store.entry(forShopID: shop.id) {
+            store.remove(entry)
+        } else {
+            store.save(shop: shop)
         }
     }
 
@@ -173,10 +195,7 @@ struct ShopDetailView: View {
     // MARK: - Directions
 
     private func openDirections() {
-        let placemark = MKPlacemark(coordinate: shop.coordinate, addressDictionary: nil)
-        let item = MKMapItem(placemark: placemark)
-        item.name = shop.name
-        item.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+        Directions.open(coordinate: shop.coordinate, name: shop.name)
     }
 }
 

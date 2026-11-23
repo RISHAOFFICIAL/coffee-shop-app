@@ -40,6 +40,9 @@ struct ContentView: View {
     }
 
     @State private var selectedTab: AppTab = .discover
+    /// A shared shop link that just opened the app, shown on the Shared
+    /// Shop Landing (Screen 14, Sprint 5).
+    @State private var sharedShop: SharedShopPayload?
 
     private var hasCompletedFirstLaunch: Bool {
         settingsRows.first?.hasCompletedFirstLaunch ?? false
@@ -67,10 +70,14 @@ struct ContentView: View {
                 DiscoverView()
             }
             Tab("Visited", systemImage: "bookmark.fill", value: .visited) {
-                VisitedView()
+                VisitedView(onCheckWantToGo: {
+                    selectedTab = .wantToGo
+                })
             }
             Tab("Want To Go", systemImage: "heart.fill", value: .wantToGo) {
-                WantToGoView()
+                WantToGoView(onShowDiscover: {
+                    selectedTab = .discover
+                })
             }
             Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
                 SettingsView()
@@ -79,6 +86,19 @@ struct ContentView: View {
         .tint(.appAccent)
         .task {
             _ = UserSettings.current(in: modelContext)
+        }
+        .onOpenURL { url in
+            // A shared shop link (coffeeshopapp://shared-shop?...): open
+            // the Shared Shop Landing. Anything else is ignored.
+            if let payload = SharedShopLink.decode(url) {
+                sharedShop = payload
+            }
+        }
+        .sheet(item: $sharedShop) { payload in
+            SharedShopLandingView(payload: payload, onViewWantToGo: {
+                sharedShop = nil
+                selectedTab = .wantToGo
+            })
         }
         .onChange(of: locationService.authorizationStatus) { _, _ in
             // Authorization granted after first launch: start watching.
