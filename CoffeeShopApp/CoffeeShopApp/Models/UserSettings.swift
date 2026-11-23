@@ -75,10 +75,7 @@ final class UserSettings {
             if Calendar.current.isDateInToday(lastPromptDate) {
                 return "On. Last prompt was today at \(lastPromptShopName)."
             }
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-            formatter.timeStyle = .none
-            return "On. Last prompt was \(formatter.string(from: lastPromptDate)) at \(lastPromptShopName)."
+            return "On. Last prompt was \(DateFormatters.mediumDate.string(from: lastPromptDate)) at \(lastPromptShopName)."
         }
         return "On. No prompt has appeared yet."
     }

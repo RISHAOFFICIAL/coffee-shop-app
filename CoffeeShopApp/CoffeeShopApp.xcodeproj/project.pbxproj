@@ -75,6 +75,8 @@
 		700000000000000000000068 /* VisitDeletionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000068 /* VisitDeletionTests.swift */; };
 		700000000000000000000069 /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000069 /* KeychainHelperTests.swift */; };
 		700000000000000000000070 /* SupabaseSyncClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000070 /* SupabaseSyncClientTests.swift */; };
+		700000000000000000000071 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000071 /* DateFormatters.swift */; };
+		700000000000000000000072 /* HardeningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000072 /* HardeningTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,6 +161,8 @@
 		600000000000000000000068 /* VisitDeletionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitDeletionTests.swift; sourceTree = "<group>"; };
 		600000000000000000000069 /* KeychainHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainHelperTests.swift; sourceTree = "<group>"; };
 		600000000000000000000070 /* SupabaseSyncClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupabaseSyncClientTests.swift; sourceTree = "<group>"; };
+		600000000000000000000071 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
+		600000000000000000000072 /* HardeningTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HardeningTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +235,7 @@
 				600000000000000000000068 /* VisitDeletionTests.swift */,
 				600000000000000000000069 /* KeychainHelperTests.swift */,
 				600000000000000000000070 /* SupabaseSyncClientTests.swift */,
+				600000000000000000000072 /* HardeningTests.swift */,
 			);
 			path = CoffeeShopAppTests;
 			sourceTree = "<group>";
@@ -316,6 +321,7 @@
 				600000000000000000000048 /* Directions.swift */,
 				600000000000000000000056 /* KeychainHelper.swift */,
 				600000000000000000000057 /* AuthManager.swift */,
+				600000000000000000000071 /* DateFormatters.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -480,6 +486,7 @@
 				700000000000000000000062 /* SyncState.swift in Sources */,
 				700000000000000000000063 /* SignInView.swift in Sources */,
 				700000000000000000000064 /* BackupBannerView.swift in Sources */,
+				700000000000000000000071 /* DateFormatters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,6 +508,7 @@
 				700000000000000000000068 /* VisitDeletionTests.swift in Sources */,
 				700000000000000000000069 /* KeychainHelperTests.swift in Sources */,
 				700000000000000000000070 /* SupabaseSyncClientTests.swift in Sources */,
+				700000000000000000000072 /* HardeningTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,7 +647,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Coffee Shop App";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Always access lets check in prompts appear when the app is closed. Your location never leaves this phone for prompts.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Location is used to show nearby coffee shops, center the map, and offer check in prompts when you arrive at a shop.";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Take a photo of your coffee to save with your visit. Photos stay on this phone.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take a photo of your coffee to save with your visit.";
 				INFOPLIST_KEY_CFBundleURLTypes = (
 					{
 						CFBundleTypeRole = Editor;
@@ -678,7 +686,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Coffee Shop App";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Always access lets check in prompts appear when the app is closed. Your location never leaves this phone for prompts.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Location is used to show nearby coffee shops, center the map, and offer check in prompts when you arrive at a shop.";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Take a photo of your coffee to save with your visit. Photos stay on this phone.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take a photo of your coffee to save with your visit.";
 				INFOPLIST_KEY_CFBundleURLTypes = (
 					{
 						CFBundleTypeRole = Editor;

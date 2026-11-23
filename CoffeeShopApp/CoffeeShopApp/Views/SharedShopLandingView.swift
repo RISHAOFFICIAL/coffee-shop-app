@@ -88,6 +88,8 @@ struct SharedShopLandingView: View {
             .navigationDestination(for: UUID.self) { shopID in
                 if let shop = shops.first(where: { $0.id == shopID }) {
                     ShopDetailView(shop: shop)
+                } else {
+                    GoneRecordView(message: "This shop is no longer in the directory.")
                 }
             }
         }

@@ -104,9 +104,6 @@ struct CheckInConfirmationView: View {
     }
 
     private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: visit.checkedInAt)
+        DateFormatters.mediumDateShortTime.string(from: visit.checkedInAt)
     }
 }

@@ -153,7 +153,7 @@ struct ShopDetailView: View {
                         Text(line.day)
                             .font(.coffeeBody)
                             .foregroundStyle(.appTextSecondary)
-                            .frame(width: 40, alignment: .leading)
+                            .frame(minWidth: 40, alignment: .leading)
                         Text(line.text)
                             .font(.coffeeBody)
                             .foregroundStyle(.appText)
@@ -184,10 +184,7 @@ struct ShopDetailView: View {
     }
 
     private var verificationLine: some View {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return Text("Source: \(shop.source). Last verified \(formatter.string(from: shop.lastVerifiedDate)).")
+        Text("Source: \(shop.source). Last verified \(DateFormatters.mediumDate.string(from: shop.lastVerifiedDate)).")
             .font(.coffeeSecondary)
             .foregroundStyle(.appTextSecondary)
     }

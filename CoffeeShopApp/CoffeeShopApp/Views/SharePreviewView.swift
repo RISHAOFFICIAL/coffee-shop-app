@@ -91,7 +91,7 @@ struct SharePreviewView: View {
                             .autocorrectionDisabled()
                             .textInputAutocapitalization(.words)
                             .padding(.horizontal, 14)
-                            .frame(height: CoffeeSpacing.minTapTarget)
+                            .frame(minHeight: CoffeeSpacing.minTapTarget)
                             .background(Color.appSurface, in: RoundedRectangle(cornerRadius: CoffeeSpacing.buttonRadius))
                         Text("Shown as Shared by you on the shop page. Optional, and remembered for next time.")
                             .font(.coffeeSecondary)

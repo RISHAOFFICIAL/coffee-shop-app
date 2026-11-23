@@ -13,6 +13,26 @@ struct VisitedSearchFilters: Equatable {
     var isActive: Bool {
         !tags.isEmpty || !neighborhoods.isEmpty || !companionIDs.isEmpty || !ratings.isEmpty
     }
+
+    /// The active filters as plain words ("Cozy, Downtown, with Maya,
+    /// 5 stars"), for the no results state. Nil when no filter is on.
+    /// Companion ids resolve through `namesByID`; an id with no name is
+    /// skipped, so a deleted companion never shows as a blank filter.
+    func activeFiltersDescription(namesByID: [UUID: String]) -> String? {
+        var parts: [String] = []
+        parts.append(contentsOf: tags.sorted {
+            $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
+        })
+        parts.append(contentsOf: neighborhoods.sorted {
+            $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
+        })
+        let names = companionIDs.compactMap { namesByID[$0] }.sorted {
+            $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
+        }
+        parts.append(contentsOf: names.map { "with \($0)" })
+        parts.append(contentsOf: ratings.sorted(by: >).map { "\($0) stars" })
+        return parts.isEmpty ? nil : parts.joined(separator: ", ")
+    }
 }
 
 /// One search result: the visit plus the designed Matched line that says

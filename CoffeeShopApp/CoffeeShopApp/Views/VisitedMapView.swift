@@ -24,11 +24,12 @@ struct VisitedMapView: View {
     /// The most recent visit per shop, newest first, with a shop row to
     /// pin. One pin per shop, even when she has been there many times.
     private var pinnedVisits: [PinnedVisit] {
+        let shopsByID = Dictionary(uniqueKeysWithValues: shops.map { ($0.id, $0) })
         var seen: Set<UUID> = []
         var pinned: [PinnedVisit] = []
         for visit in visits {
             guard !seen.contains(visit.shopID),
-                  let shop = shops.first(where: { $0.id == visit.shopID }) else { continue }
+                  let shop = shopsByID[visit.shopID] else { continue }
             seen.insert(visit.shopID)
             pinned.append(PinnedVisit(visit: visit, shop: shop))
         }
@@ -51,6 +52,7 @@ struct VisitedMapView: View {
                             ShopPinView(shop: pinned.shop, isSelected: selectedVisitID == pinned.visit.id)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityHint("Tap to preview this visit")
                     }
                 }
                 UserAnnotation()
@@ -149,9 +151,6 @@ struct VisitedPlaceCardView: View {
     }
 
     private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: visit.checkedInAt)
+        DateFormatters.mediumDateShortTime.string(from: visit.checkedInAt)
     }
 }

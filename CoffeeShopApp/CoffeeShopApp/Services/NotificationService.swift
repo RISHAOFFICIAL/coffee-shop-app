@@ -15,6 +15,25 @@ final class NotificationService: NSObject, ObservableObject {
 
     @Published private(set) var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
+    /// Plain language status for Settings. Notifications are local only:
+    /// the prompt is scheduled on the phone, nothing is sent to a server.
+    var statusDescription: String {
+        switch authorizationStatus {
+        case .notDetermined:
+            return "Not set yet"
+        case .denied:
+            return "Off. Prompts cannot appear."
+        case .authorized:
+            return "On. Prompts can appear."
+        case .provisional:
+            return "On, quietly for now. Prompts can appear."
+        case .ephemeral:
+            return "On for this session."
+        @unknown default:
+            return "Unknown"
+        }
+    }
+
     /// Fired when the user taps Check In on the notification.
     var onCheckInAction: ((UUID) -> Void)?
     /// Fired when the user taps Not This Shop on the notification.

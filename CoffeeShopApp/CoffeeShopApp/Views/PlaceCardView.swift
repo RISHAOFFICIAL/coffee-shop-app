@@ -101,6 +101,16 @@ struct ShopRowView: View {
         .padding(.vertical, 8)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(shop.name), \(shop.neighborhood), \(shop.kind.displayText), \(shop.openStatusText)")
+        .accessibilityLabel(rowAccessibilityLabel)
+    }
+
+    /// The row as VoiceOver reads it: name, neighborhood, kind, open
+    /// status, and the distance when location is on.
+    private var rowAccessibilityLabel: String {
+        var label = "\(shop.name), \(shop.neighborhood), \(shop.kind.displayText), \(shop.openStatusText)"
+        if let distanceText {
+            label += ", \(distanceText) away"
+        }
+        return label
     }
 }

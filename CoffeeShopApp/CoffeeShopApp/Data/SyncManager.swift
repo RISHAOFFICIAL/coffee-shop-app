@@ -157,7 +157,7 @@ final class SyncManager: ObservableObject {
     func syncIfNeeded() async {
         guard isSignedIn, client.isConfigured, !isSyncing else { return }
         refreshCounts()
-        let stale = lastSyncAttempt == nil || Date().timeIntervalSince(lastSyncAttempt!) > 300
+        let stale = lastSyncAttempt.map { Date().timeIntervalSince($0) > 300 } ?? true
         guard pendingCount > 0 || stale else { return }
         lastSyncAttempt = Date()
         do {

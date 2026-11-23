@@ -27,7 +27,7 @@ struct SignInView: View {
                 Text("Back up your Visited and Want To Go lists so a new phone keeps them.")
                     .font(.coffeeBody)
                     .foregroundStyle(.appTextSecondary)
-                Text("Sign in with Apple. Your name and email stay private, and nothing about your visits is ever shared.")
+                Text("Sign in with Apple. Your name and email stay private. Your visits back up to your own account only and are never shared with anyone.")
                     .font(.coffeeSecondary)
                     .foregroundStyle(.appTextSecondary)
 

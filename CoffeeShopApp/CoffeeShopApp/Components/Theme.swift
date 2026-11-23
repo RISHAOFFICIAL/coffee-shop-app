@@ -61,22 +61,29 @@ extension Color {
     static let softBrown = Color.appTextSecondary
 }
 
-/// Type scale from the hi-fi spec (SF Pro). Layouts are drawn at the
-/// default size; primary actions must stay unclipped at the largest
+/// Type scale from the hi-fi spec (SF Pro), mapped to the matching
+/// semantic text styles so Dynamic Type scales every size: a user who
+/// reads at an accessibility size gets larger text instead of clipped
+/// text. The default sizes match the spec exactly (title 28, headline
+/// 17, subheadline 15, footnote 13, caption 11). Layouts are drawn at
+/// the default size; primary actions must stay unclipped at the largest
 /// accessibility size, stacking chips rather than shrinking text.
+/// Fixed point sizes are never used for text in this app (Sprint 7):
+/// the remaining fixed sizes are decorative SF Symbol icons, which do
+/// not carry text.
 extension Font {
     /// Screen title, 28pt bold.
-    static let coffeeTitle = Font.system(size: 28, weight: .bold)
+    static let coffeeTitle = Font.title.weight(.bold)
     /// Card title, 17pt semibold.
-    static let coffeeCardTitle = Font.system(size: 17, weight: .semibold)
+    static let coffeeCardTitle = Font.headline
     /// Body, 15pt.
-    static let coffeeBody = Font.system(size: 15, weight: .regular)
+    static let coffeeBody = Font.subheadline
     /// Secondary, 13pt.
-    static let coffeeSecondary = Font.system(size: 13, weight: .regular)
+    static let coffeeSecondary = Font.footnote
     /// Button, 17pt semibold.
-    static let coffeeButton = Font.system(size: 17, weight: .semibold)
+    static let coffeeButton = Font.headline
     /// Tab label, 11pt semibold.
-    static let coffeeTabLabel = Font.system(size: 11, weight: .semibold)
+    static let coffeeTabLabel = Font.caption2.weight(.semibold)
 }
 
 /// Spacing and radii from the hi-fi spec: 16pt screen margins, 8pt grid.

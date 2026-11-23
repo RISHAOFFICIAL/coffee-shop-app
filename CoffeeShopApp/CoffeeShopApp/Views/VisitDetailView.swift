@@ -237,10 +237,7 @@ struct VisitDetailView: View {
     }
 
     private var shortDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: visit.checkedInAt)
+        DateFormatters.mediumDate.string(from: visit.checkedInAt)
     }
 
     /// Every visit to this shop, newest first, each row opening that
@@ -308,17 +305,11 @@ struct VisitDetailView: View {
     private var historySummary: String {
         let count = shopVisits.count
         guard let first = shopVisits.last else { return "" }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return "Visited \(count) times, first on \(formatter.string(from: first.checkedInAt))."
+        return "Visited \(count) times, first on \(DateFormatters.mediumDate.string(from: first.checkedInAt))."
     }
 
     private func historyDate(for shopVisit: Visit) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: shopVisit.checkedInAt)
+        DateFormatters.mediumDateShortTime.string(from: shopVisit.checkedInAt)
     }
 
     private func openDirections() {
@@ -330,9 +321,6 @@ struct VisitDetailView: View {
     }
 
     private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        formatter.timeStyle = .short
-        return formatter.string(from: visit.checkedInAt)
+        DateFormatters.fullDateShortTime.string(from: visit.checkedInAt)
     }
 }

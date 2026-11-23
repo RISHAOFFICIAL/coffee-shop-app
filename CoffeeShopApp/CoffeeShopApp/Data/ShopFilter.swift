@@ -17,6 +17,18 @@ struct ShopFilterCriteria: Equatable {
             || independentOnly
             || neighborhood != nil
     }
+
+    /// The active filters as plain words ("Open Now, Downtown"), for the
+    /// no results state and the Filters button's VoiceOver value. Nil
+    /// when no filter is on. The search text is not a filter: it stays
+    /// visible in the search field itself.
+    var activeFiltersDescription: String? {
+        var parts: [String] = []
+        if openNowOnly { parts.append("Open Now") }
+        if independentOnly { parts.append("Independent Only") }
+        if let neighborhood { parts.append(neighborhood) }
+        return parts.isEmpty ? nil : parts.joined(separator: ", ")
+    }
 }
 
 enum ShopFilter {

@@ -128,3 +128,21 @@ struct RecoveryCardView: View {
         .background(Color.appSurfaceAlt, in: RoundedRectangle(cornerRadius: CoffeeSpacing.cardRadius))
     }
 }
+
+/// What a pushed detail screen shows when its record is gone (a visit
+/// deleted from another screen, a shop retired from the directory).
+/// A plain line, never a blank screen (Sprint 7 hardening).
+struct GoneRecordView: View {
+    let message: String
+
+    var body: some View {
+        ZStack {
+            Color.appBackground.ignoresSafeArea()
+            Text(message)
+                .font(.coffeeBody)
+                .foregroundStyle(.appTextSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+        }
+    }
+}

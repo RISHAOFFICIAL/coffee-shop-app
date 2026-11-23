@@ -25,6 +25,15 @@ struct ManualCheckInView: View {
             VStack(spacing: 0) {
                 searchField
                 List {
+                    if shops.isEmpty {
+                        Text("No shops in the directory yet. You can still add one by name below.")
+                            .font(.coffeeBody)
+                            .foregroundStyle(.appTextSecondary)
+                    } else if results.isEmpty {
+                        Text("No shops match that search. Add it by name below.")
+                            .font(.coffeeBody)
+                            .foregroundStyle(.appTextSecondary)
+                    }
                     ForEach(results) { shop in
                         Button {
                             selectedShop = shop
@@ -41,6 +50,7 @@ struct ManualCheckInView: View {
                             }
                         }
                         .buttonStyle(.plain)
+                        .accessibilityAddTraits(selectedShop?.id == shop.id ? .isSelected : [])
                     }
                     Button("Add This Shop By Name") {
                         showTypedName = true
@@ -101,7 +111,7 @@ struct ManualCheckInView: View {
             }
         }
         .padding(.horizontal, 14)
-        .frame(height: CoffeeSpacing.minTapTarget)
+        .frame(minHeight: CoffeeSpacing.minTapTarget)
         .background(Color.appSurface, in: RoundedRectangle(cornerRadius: CoffeeSpacing.buttonRadius))
         .padding(CoffeeSpacing.screenMargin)
     }

@@ -9,6 +9,7 @@ struct SettingsView: View {
     @Query private var settingsRows: [UserSettings]
     @EnvironmentObject private var checkInManager: CheckInManager
     @EnvironmentObject private var locationService: LocationService
+    @EnvironmentObject private var notificationService: NotificationService
     @EnvironmentObject private var directoryStore: DirectoryStore
     @EnvironmentObject private var syncManager: SyncManager
     @Environment(\.modelContext) private var modelContext
@@ -30,12 +31,16 @@ struct SettingsView: View {
                 accountSection
                 backupSection
                 promptsSection
+                notificationsSection
                 locationSection
                 sharingSection
                 directorySection
                 aboutSection
             }
             .navigationTitle("Settings")
+            .task {
+                await notificationService.refreshStatus()
+            }
             .sheet(isPresented: $showSignIn) {
                 SignInView()
             }
@@ -252,6 +257,37 @@ struct SettingsView: View {
 
     // MARK: - Location
 
+    /// The notifications permission line (Sprint 7): the third denied
+    /// path, next to location and photos. A denied state says plainly
+    /// that prompts cannot appear and points at the phone setting; it
+    /// never nags, and manual check in always works without it.
+    private var notificationsSection: some View {
+        Section("Notifications") {
+            Button(action: openSystemSettings) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(notificationService.statusDescription)
+                            .font(.coffeeBody)
+                            .foregroundStyle(.appText)
+                        Text("Open the phone setting to change it")
+                            .font(.coffeeSecondary)
+                            .foregroundStyle(.appTextSecondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.appTextSecondary)
+                }
+            }
+            .buttonStyle(.plain)
+            if notificationService.authorizationStatus == .denied {
+                Text("Notifications are off, so arrival prompts cannot appear. Check in manually from Discover or Visited.")
+                    .font(.coffeeSecondary)
+                    .foregroundStyle(.appTextSecondary)
+            }
+        }
+    }
+
     private var locationSection: some View {
         Section("Location Access") {
             Button(action: openSystemSettings) {
@@ -351,10 +387,7 @@ struct SettingsView: View {
     }
 
     private func mediumDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: date)
+        DateFormatters.mediumDate.string(from: date)
     }
 
     private func openSystemSettings() {

@@ -9,6 +9,7 @@ struct FirstLaunchView: View {
     var onComplete: () -> Void
 
     @EnvironmentObject private var locationService: LocationService
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private enum Page {
         case intro
@@ -34,7 +35,9 @@ struct FirstLaunchView: View {
                 Spacer()
             }
             .padding(CoffeeSpacing.screenMargin)
-            .animation(.easeInOut, value: page)
+            // The page slide is skipped with Reduce Motion on: the next
+            // page just appears. This is the app's only animation.
+            .animation(reduceMotion ? nil : .easeInOut, value: page)
         }
         .sheet(isPresented: $showSignIn) {
             SignInView(onDoneAfterSignIn: onComplete)

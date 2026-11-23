@@ -46,6 +46,7 @@ struct CoffeeShopAppApp: App {
                 .environmentObject(checkInManager)
                 .environmentObject(authManager)
                 .environmentObject(syncManager)
+                .environmentObject(NotificationService.shared)
                 .task {
                     await directoryStore.load()
                     checkInManager.startMonitoring()
@@ -71,6 +72,12 @@ struct CoffeeShopAppApp: App {
             // If the persistent store cannot open, fall back to an
             // in-memory store so the app still runs. Data will not
             // persist in that state; the failure is logged, not hidden.
+            // The in-memory fallback uses try! on purpose (reviewed in
+            // Sprint 7): it touches no disk, runs no migration, and can
+            // only fail on a schema definition error, which would fail
+            // the same way in development and never from device state.
+            // With no store at all the app cannot run, so there is no
+            // graceful state past this point.
             print("Persistent store failed to open, using in-memory store: \(error.localizedDescription)")
             return try! ModelContainer(
                 for: schema,

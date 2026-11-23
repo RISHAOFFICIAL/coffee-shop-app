@@ -47,6 +47,12 @@ struct VisitedSearchView: View {
         VisitedSearch.availableRatings(in: visits)
     }
 
+    /// Companion names by id, for the no results line and the row
+    /// companion lookups.
+    private var companionNamesByID: [UUID: String] {
+        Dictionary(uniqueKeysWithValues: companions.map { ($0.id, $0.name) })
+    }
+
     var body: some View {
         Group {
             if visits.isEmpty {
@@ -116,7 +122,7 @@ struct VisitedSearchView: View {
             }
         }
         .padding(.horizontal, 14)
-        .frame(height: CoffeeSpacing.minTapTarget)
+        .frame(minHeight: CoffeeSpacing.minTapTarget)
         .background(Color.appSurface, in: RoundedRectangle(cornerRadius: CoffeeSpacing.buttonRadius))
     }
 
@@ -239,7 +245,7 @@ struct VisitedSearchView: View {
                     Text("No visits match that.")
                         .font(.coffeeCardTitle)
                         .foregroundStyle(.appText)
-                    Text("Try a different word, or clear the filters and browse everything you have visited.")
+                    Text(noResultsExplanation)
                         .font(.coffeeBody)
                         .foregroundStyle(.appTextSecondary)
                         .multilineTextAlignment(.center)
@@ -265,8 +271,21 @@ struct VisitedSearchView: View {
     }
 
     private func companionNames(for visit: Visit) -> [String] {
-        visit.companionIDs.compactMap { id in
-            companions.first(where: { $0.id == id })?.name
+        visit.companionIDs.compactMap { companionNamesByID[$0] }
+    }
+
+    /// The no results line names what was searched and which filters are
+    /// on, so the dead end says what caused it instead of just saying no.
+    private var noResultsExplanation: String {
+        var parts: [String] = []
+        let query = searchText.trimmingCharacters(in: .whitespaces)
+        if !query.isEmpty {
+            parts.append("Nothing matches \"\(query)\".")
         }
+        if let activeFilters = filters.activeFiltersDescription(namesByID: companionNamesByID) {
+            parts.append("Filters on: \(activeFilters).")
+        }
+        parts.append("Try a different word, or clear the filters and browse everything you have visited.")
+        return parts.joined(separator: " ")
     }
 }

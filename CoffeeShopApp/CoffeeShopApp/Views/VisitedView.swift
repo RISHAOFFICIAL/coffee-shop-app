@@ -90,6 +90,8 @@ struct VisitedView: View {
             .navigationDestination(for: UUID.self) { visitID in
                 if let visit = visits.first(where: { $0.id == visitID }) {
                     VisitDetailView(visit: visit)
+                } else {
+                    GoneRecordView(message: "This visit is no longer in your log.")
                 }
             }
             .navigationDestination(isPresented: $showSearch) {
@@ -202,10 +204,14 @@ struct VisitedView: View {
         try? modelContext.save()
     }
 
+    /// Companion names by id, built once per render so each row looks
+    /// its companions up instead of scanning the whole list per row.
+    private var companionNamesByID: [UUID: String] {
+        Dictionary(uniqueKeysWithValues: companions.map { ($0.id, $0.name) })
+    }
+
     private func companionNames(for visit: Visit) -> [String] {
-        visit.companionIDs.compactMap { id in
-            companions.first(where: { $0.id == id })?.name
-        }
+        visit.companionIDs.compactMap { companionNamesByID[$0] }
     }
 
     private var emptyState: some View {
@@ -313,14 +319,24 @@ struct VisitRowView: View {
         .padding(.vertical, 8)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(visit.shopName), \(visit.neighborhood), \(relativeDate)")
+        .accessibilityLabel(rowAccessibilityLabel)
         .task(id: visit.photoFilename) {
             if let filename = visit.photoFilename {
-                photoImage = VisitPhotoStore.load(filename: filename)
+                photoImage = VisitPhotoStore.thumbnail(filename: filename)
             } else {
                 photoImage = nil
             }
         }
+    }
+
+    /// The row as VoiceOver reads it: shop, neighborhood, date, and the
+    /// rating when one was given.
+    private var rowAccessibilityLabel: String {
+        var label = "\(visit.shopName), \(visit.neighborhood), \(relativeDate)"
+        if let rating = visit.rating {
+            label += ", rated \(rating) out of 5"
+        }
+        return label
     }
 
     /// "Cappuccino, with Aric", or whichever half the visit has.

@@ -79,6 +79,10 @@ struct SharedShopPayload: Identifiable, Equatable {
 enum SharedShopLink {
     static let scheme = "coffeeshopapp"
     static let host = "shared-shop"
+    /// The note is capped inside the link, so a long note cannot make a
+    /// link so long that a messaging app truncates or refuses it. The
+    /// full note always rides in the message text next to the link.
+    static let linkNoteLimit = 500
 
     /// Encodes a payload into an app link, or nil when the name is blank.
     static func url(for payload: SharedShopPayload) -> URL? {
@@ -103,7 +107,7 @@ enum SharedShopLink {
             items.append(URLQueryItem(name: "rating", value: String(rating)))
         }
         if let note = payload.note, !note.isEmpty {
-            items.append(URLQueryItem(name: "note", value: note))
+            items.append(URLQueryItem(name: "note", value: String(note.prefix(linkNoteLimit))))
         }
         if let sharedBy = payload.sharedBy, !sharedBy.isEmpty {
             items.append(URLQueryItem(name: "by", value: sharedBy))

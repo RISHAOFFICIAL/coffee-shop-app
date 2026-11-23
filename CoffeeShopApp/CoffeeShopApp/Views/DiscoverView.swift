@@ -75,6 +75,8 @@ struct DiscoverView: View {
             .navigationDestination(for: UUID.self) { shopID in
                 if let shop = shops.first(where: { $0.id == shopID }) {
                     ShopDetailView(shop: shop)
+                } else {
+                    GoneRecordView(message: "This shop is no longer in the directory.")
                 }
             }
             .sheet(isPresented: $showFilters) {
@@ -112,12 +114,7 @@ struct DiscoverView: View {
             Color.appBackground.ignoresSafeArea()
             switch directoryStore.state {
             case .loading:
-                VStack(spacing: 12) {
-                    ProgressView()
-                    Text("Loading Detroit shops...")
-                        .font(.coffeeBody)
-                        .foregroundStyle(.appTextSecondary)
-                }
+                DirectoryLoadingSkeletonView()
             case .error(let message):
                 VStack(spacing: 14) {
                     Image(systemName: "wifi.exclamationmark")
@@ -159,6 +156,7 @@ struct DiscoverView: View {
                         ShopPinView(shop: shop, isSelected: selectedShopID == shop.id)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityHint("Tap to preview this shop")
                 }
             }
             UserAnnotation()
@@ -196,6 +194,13 @@ struct DiscoverView: View {
                     .font(.coffeeBody)
                     .foregroundStyle(.appTextSecondary)
                     .multilineTextAlignment(.center)
+                if let activeFilters = criteria.activeFiltersDescription {
+                    Text("With these filters on: \(activeFilters).")
+                        .font(.coffeeSecondary)
+                        .foregroundStyle(.appTextSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+                }
                 Button("Clear Filters") {
                     criteria = ShopFilterCriteria()
                 }
@@ -242,10 +247,7 @@ struct DiscoverView: View {
     }
 
     private func directoryFooterText(lastUpdated: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return "Directory updated \(formatter.string(from: lastUpdated))."
+        "Directory updated \(DateFormatters.mediumDate.string(from: lastUpdated))."
     }
 
     // MARK: - Top controls
@@ -272,7 +274,7 @@ struct DiscoverView: View {
                     }
                 }
                 .padding(.horizontal, 14)
-                .frame(height: CoffeeSpacing.minTapTarget)
+                .frame(minHeight: CoffeeSpacing.minTapTarget)
                 .glassPill()
 
                 Button {
@@ -294,6 +296,7 @@ struct DiscoverView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Filters")
+                .accessibilityValue(criteria.activeFiltersDescription ?? "No filters")
 
                 Button("Check In") {
                     showManualCheckIn = true
@@ -301,7 +304,7 @@ struct DiscoverView: View {
                 .font(.coffeeSecondary.weight(.semibold))
                 .foregroundStyle(.appPrimaryText)
                 .padding(.horizontal, 14)
-                .frame(height: CoffeeSpacing.minTapTarget)
+                .frame(minHeight: CoffeeSpacing.minTapTarget)
                 .background(Color.appPrimary, in: Capsule())
                 .accessibilityLabel("Check in manually")
             }
@@ -368,5 +371,36 @@ struct DiscoverView: View {
     private func openSystemSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(url)
+    }
+}
+
+/// The first load skeleton (Sprint 7): placeholder rows shaped like shop
+/// rows, instead of a bare spinner, while the directory loads with no
+/// cache. A refresh with cached shops keeps showing the cached list, so
+/// this only appears on a first load. The placeholder words are hidden
+/// from VoiceOver; the container reads as one loading line. The redacted
+/// treatment is static, so Reduce Motion needs no special case here.
+struct DirectoryLoadingSkeletonView: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(0..<6, id: \.self) { _ in
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Coffee shop name")
+                        .font(.coffeeCardTitle)
+                    Text("Neighborhood, Independent")
+                        .font(.coffeeSecondary)
+                    Text("Open Now, until 6 pm")
+                        .font(.coffeeSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, CoffeeSpacing.screenMargin)
+                .padding(.vertical, 12)
+                Divider()
+            }
+            Spacer()
+        }
+        .redacted(reason: .placeholder)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Loading Detroit shops")
     }
 }

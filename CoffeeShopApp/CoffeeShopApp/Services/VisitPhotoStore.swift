@@ -14,12 +14,14 @@ enum VisitPhotoStore {
     static let maxDimension: CGFloat = 1600
 
     /// The folder visit photos live in. Tests pass a temporary base URL;
-    /// the app uses Application Support.
+    /// the app uses Application Support. Application Support always
+    /// exists on iOS; the temporary directory fallback only guards the
+    /// lookup itself, so this never crashes on a missing folder list.
     static func directoryURL(baseURL: URL? = nil) -> URL {
         let base = baseURL ?? FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
-        ).first!
+        ).first ?? FileManager.default.temporaryDirectory
         return base.appendingPathComponent(directoryName, isDirectory: true)
     }
 
@@ -66,6 +68,15 @@ enum VisitPhotoStore {
         return UIImage(data: data)
     }
 
+    /// Loads a stored photo shrunk to a small thumbnail, for list rows.
+    /// The full 1600px image is never decoded for a 56pt thumbnail, so
+    /// a long Visited list stays light on memory. Nil when there is no
+    /// photo or it cannot be read. The aspect ratio is kept.
+    static func thumbnail(filename: String, targetSize: CGFloat = 112, baseURL: URL? = nil) -> UIImage? {
+        guard let image = load(filename: filename, baseURL: baseURL) else { return nil }
+        return downscaled(image, toMaxDimension: targetSize)
+    }
+
     /// Reads the stored photo bytes, or nil when there is none. Sync
     /// uploads these bytes; the image never needs decoding for that.
     static func data(filename: String, baseURL: URL? = nil) -> Data? {
@@ -100,10 +111,17 @@ enum VisitPhotoStore {
     /// Shrinks an image to at most `maxDimension` on the long edge,
     /// keeping its aspect ratio. Smaller images come back unchanged.
     static func downscaled(_ image: UIImage) -> UIImage {
+        downscaled(image, toMaxDimension: maxDimension)
+    }
+
+    /// Shrinks an image to at most `limit` on the long edge, keeping its
+    /// aspect ratio. Smaller images come back unchanged. The thumbnail
+    /// loader uses a small limit; saving uses `maxDimension`.
+    static func downscaled(_ image: UIImage, toMaxDimension limit: CGFloat) -> UIImage {
         let size = image.size
         let longest = max(size.width, size.height)
-        guard longest > maxDimension else { return image }
-        let scale = maxDimension / longest
+        guard longest > limit else { return image }
+        let scale = limit / longest
         let newSize = CGSize(width: size.width * scale, height: size.height * scale)
         let renderer = UIGraphicsImageRenderer(size: newSize)
         return renderer.image { _ in

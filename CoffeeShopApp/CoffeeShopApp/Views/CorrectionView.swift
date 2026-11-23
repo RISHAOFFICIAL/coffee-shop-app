@@ -65,6 +65,11 @@ struct CorrectionListView: View {
                     .foregroundStyle(.appTextSecondary)
             }
             Section("Nearby shops") {
+                if nearbyShops.isEmpty {
+                    Text("No other shops nearby in the directory.")
+                        .font(.coffeeBody)
+                        .foregroundStyle(.appTextSecondary)
+                }
                 ForEach(nearbyShops) { shop in
                     Button {
                         checkInManager.correctCheckIn(to: shop)

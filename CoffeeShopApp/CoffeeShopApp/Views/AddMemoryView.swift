@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 import UIKit
+import AVFoundation
 
 /// Add Memory (Screen 8, Stories S8 and S15): the joggers sheet, in the
 /// approved order: rating, quick tags for why she liked it, what she
@@ -14,6 +15,7 @@ struct AddMemoryView: View {
 
     @EnvironmentObject private var checkInManager: CheckInManager
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     @Query(sort: \Companion.name) private var savedCompanions: [Companion]
     @Query private var shops: [Shop]
 
@@ -48,6 +50,10 @@ struct AddMemoryView: View {
     @State private var showCorrection = false
     @State private var didSeedCompanions = false
     @State private var didSave = false
+    /// The camera permission state, refreshed on appear and when the app
+    /// returns from Settings, so a denied camera shows an honest line
+    /// instead of a button that opens a broken picker (Sprint 7).
+    @State private var cameraAuthorization: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
 
     init(visit: Visit) {
         self.visit = visit
@@ -59,6 +65,13 @@ struct AddMemoryView: View {
 
     private var cameraAvailable: Bool {
         UIImagePickerController.isSourceTypeAvailable(.camera)
+    }
+
+    /// True when the camera exists but permission was denied or is
+    /// restricted by the phone. A not yet asked state is not denied:
+    /// tapping Take A Photo asks the system question then.
+    private var cameraAccessDenied: Bool {
+        cameraAuthorization == .denied || cameraAuthorization == .restricted
     }
 
     /// The shop the correction list starts from: the directory row when
@@ -129,6 +142,14 @@ struct AddMemoryView: View {
             }
             .onAppear {
                 seedCompanionsIfNeeded()
+                refreshCameraAuthorization()
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                // Back from the phone Settings app: the permission may
+                // have changed while the sheet was open.
+                if newPhase == .active {
+                    refreshCameraAuthorization()
+                }
             }
             .onChange(of: savedCompanions) { _, _ in
                 seedCompanionsIfNeeded()
@@ -219,6 +240,7 @@ struct AddMemoryView: View {
                         ChipView(text: tag, isSelected: selectedTags.contains(tag))
                     }
                     .buttonStyle(.plain)
+                    .accessibilityAddTraits(selectedTags.contains(tag) ? .isSelected : [])
                 }
             }
             HStack(spacing: 8) {
@@ -227,7 +249,7 @@ struct AddMemoryView: View {
                     .foregroundStyle(.appText)
                     .autocorrectionDisabled()
                     .padding(.horizontal, 12)
-                    .frame(height: CoffeeSpacing.minTapTarget)
+                    .frame(minHeight: CoffeeSpacing.minTapTarget)
                     .background(Color.appSurface, in: RoundedRectangle(cornerRadius: CoffeeSpacing.buttonRadius))
                 Button("Add") {
                     addCustomTag()
@@ -267,7 +289,7 @@ struct AddMemoryView: View {
                 .foregroundStyle(.appText)
                 .autocorrectionDisabled()
                 .padding(.horizontal, 12)
-                .frame(height: CoffeeSpacing.minTapTarget)
+                .frame(minHeight: CoffeeSpacing.minTapTarget)
                 .background(Color.appSurface, in: RoundedRectangle(cornerRadius: CoffeeSpacing.buttonRadius))
         }
     }
@@ -290,6 +312,7 @@ struct AddMemoryView: View {
                             ChipView(text: name, isSelected: selectedCompanionNames.contains(name))
                         }
                         .buttonStyle(.plain)
+                        .accessibilityAddTraits(selectedCompanionNames.contains(name) ? .isSelected : [])
                     }
                 }
             }
@@ -299,7 +322,7 @@ struct AddMemoryView: View {
                     .foregroundStyle(.appText)
                     .autocorrectionDisabled()
                     .padding(.horizontal, 12)
-                    .frame(height: CoffeeSpacing.minTapTarget)
+                    .frame(minHeight: CoffeeSpacing.minTapTarget)
                     .background(Color.appSurface, in: RoundedRectangle(cornerRadius: CoffeeSpacing.buttonRadius))
                 Button("Add") {
                     addCompanionName()
@@ -309,7 +332,7 @@ struct AddMemoryView: View {
                 .frame(minHeight: CoffeeSpacing.minTapTarget)
                 .disabled(companionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
-            Text("Names stay in this app. Contacts are never imported.")
+            Text("Names stay in your log. Contacts are never imported.")
                 .font(.coffeeSecondary)
                 .foregroundStyle(.appTextSecondary)
         }
@@ -367,11 +390,24 @@ struct AddMemoryView: View {
                     .frame(minHeight: CoffeeSpacing.minTapTarget)
                     .background(Color.appChipBackground, in: RoundedRectangle(cornerRadius: CoffeeSpacing.buttonRadius))
             }
-            if cameraAvailable {
+            if cameraAvailable && !cameraAccessDenied {
                 Button("Take A Photo") {
                     showCamera = true
                 }
                 .buttonStyle(SecondaryButtonStyle())
+            }
+            if cameraAccessDenied {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Camera access is off. You can still choose a photo from your library.")
+                        .font(.coffeeSecondary)
+                        .foregroundStyle(.appTextSecondary)
+                    Button("Open Settings") {
+                        openSystemSettings()
+                    }
+                    .font(.coffeeSecondary.weight(.semibold))
+                    .foregroundStyle(.appAccent)
+                    .frame(minHeight: CoffeeSpacing.minTapTarget)
+                }
             }
             if photoImage != nil {
                 Button("Remove Photo", role: .destructive) {
@@ -419,6 +455,15 @@ struct AddMemoryView: View {
         photoImage = nil
         photoRemoved = true
         photoMessage = nil
+    }
+
+    private func refreshCameraAuthorization() {
+        cameraAuthorization = AVCaptureDevice.authorizationStatus(for: .video)
+    }
+
+    private func openSystemSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
     }
 
     // MARK: - Note
