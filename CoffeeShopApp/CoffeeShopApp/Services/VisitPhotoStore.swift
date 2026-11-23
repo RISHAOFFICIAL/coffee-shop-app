@@ -1,0 +1,93 @@
+import Foundation
+import UIKit
+
+/// On device storage for visit photos (Story S8). A photo file lives in
+/// the app's Application Support directory under VisitPhotos, named after
+/// the visit it belongs to. The Visit model stores only the filename, so
+/// the photo never travels with a share and never leaves the phone except
+/// through the owner's own sync in Sprint 6. A failed save or load never
+/// blocks the visit: callers treat a missing photo as no photo.
+enum VisitPhotoStore {
+    static let directoryName = "VisitPhotos"
+    /// Photos are stored no larger than this on the long edge, so a visit
+    /// photo stays small on disk without looking soft on the phone.
+    static let maxDimension: CGFloat = 1600
+
+    /// The folder visit photos live in. Tests pass a temporary base URL;
+    /// the app uses Application Support.
+    static func directoryURL(baseURL: URL? = nil) -> URL {
+        let base = baseURL ?? FileManager.default.urls(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask
+        ).first!
+        return base.appendingPathComponent(directoryName, isDirectory: true)
+    }
+
+    static func filename(for visitID: UUID) -> String {
+        "\(visitID.uuidString).jpg"
+    }
+
+    /// The draft file a picked photo is written to while the Add Memory
+    /// sheet is still open. Saving the sheet moves the draft into place;
+    /// cancelling deletes it, so an existing photo is never overwritten
+    /// by a photo the user did not keep.
+    static func draftFilename(for visitID: UUID) -> String {
+        "\(visitID.uuidString)-draft.jpg"
+    }
+
+    /// Saves the photo for a visit, downscaling large images first.
+    /// Returns the stored filename. Throws on any write failure; the
+    /// caller keeps the visit and reports the photo as not saved.
+    @discardableResult
+    static func save(_ image: UIImage, for visitID: UUID, baseURL: URL? = nil) throws -> String {
+        try saveImage(image, filename: filename(for: visitID), baseURL: baseURL)
+    }
+
+    /// Saves a picked photo as a draft while the sheet is still open.
+    /// Returns the draft filename.
+    @discardableResult
+    static func saveDraft(_ image: UIImage, for visitID: UUID, baseURL: URL? = nil) throws -> String {
+        try saveImage(image, filename: draftFilename(for: visitID), baseURL: baseURL)
+    }
+
+    private static func saveImage(_ image: UIImage, filename: String, baseURL: URL? = nil) throws -> String {
+        let directory = directoryURL(baseURL: baseURL)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        guard let data = downscaled(image).jpegData(compressionQuality: 0.8) else {
+            throw VisitPhotoError.encodingFailed
+        }
+        try data.write(to: directory.appendingPathComponent(filename), options: [.atomic])
+        return filename
+    }
+
+    /// Loads a stored photo, or nil when there is none or it cannot be read.
+    static func load(filename: String, baseURL: URL? = nil) -> UIImage? {
+        let url = directoryURL(baseURL: baseURL).appendingPathComponent(filename)
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return UIImage(data: data)
+    }
+
+    /// Deletes a stored photo. Missing files are fine; nothing throws.
+    static func delete(filename: String, baseURL: URL? = nil) {
+        let url = directoryURL(baseURL: baseURL).appendingPathComponent(filename)
+        try? FileManager.default.removeItem(at: url)
+    }
+
+    /// Shrinks an image to at most `maxDimension` on the long edge,
+    /// keeping its aspect ratio. Smaller images come back unchanged.
+    static func downscaled(_ image: UIImage) -> UIImage {
+        let size = image.size
+        let longest = max(size.width, size.height)
+        guard longest > maxDimension else { return image }
+        let scale = maxDimension / longest
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+    }
+
+    enum VisitPhotoError: Error {
+        case encodingFailed
+    }
+}

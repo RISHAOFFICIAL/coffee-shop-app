@@ -59,11 +59,13 @@ struct CheckInPromptView: View {
 }
 
 /// The confirmation after a one tap save: "Saved to Visited." The visit is
-/// already on the phone at this point. Add A Memory arrives with the
-/// joggers sheet in Sprint 4; until then the confirmation offers Done and
-/// a way to see the visit in Visited.
+/// already on the phone at this point. Add A Memory opens the joggers
+/// sheet for the same visit (Sprint 4); Done and View in Visited just
+/// close the confirmation, and the memory can be added later from the
+/// visit itself.
 struct CheckInConfirmationView: View {
     let visit: Visit
+    let onAddMemory: () -> Void
     let onViewInVisited: () -> Void
     let onDone: () -> Void
 
@@ -85,10 +87,14 @@ struct CheckInConfirmationView: View {
                     .foregroundStyle(.appTextSecondary)
             }
             VStack(spacing: 12) {
-                Button("View in Visited", action: onViewInVisited)
+                Button("Add A Memory", action: onAddMemory)
                     .buttonStyle(PrimaryButtonStyle())
-                Button("Done", action: onDone)
+                Button("View in Visited", action: onViewInVisited)
                     .buttonStyle(SecondaryButtonStyle())
+                Button("Done", action: onDone)
+                    .font(.coffeeButton)
+                    .foregroundStyle(.appTextSecondary)
+                    .frame(minHeight: CoffeeSpacing.minTapTarget)
             }
             Spacer()
         }

@@ -61,19 +61,12 @@ final class VisitStore: ObservableObject {
         coordinate: CLLocationCoordinate2D?,
         at date: Date = Date()
     ) throws -> Visit {
-        let shop = Shop(
-            id: UUID(),
+        let shop = makeUnverifiedShop(
             name: name,
             address: address,
             neighborhood: neighborhood,
-            latitude: coordinate?.latitude ?? DetroitCenter.coordinate.latitude,
-            longitude: coordinate?.longitude ?? DetroitCenter.coordinate.longitude,
-            kind: .independent,
-            hours: .empty,
-            source: "Typed in by the user",
-            lastVerifiedDate: date,
-            isPublished: false,
-            isUserEntered: true
+            coordinate: coordinate,
+            at: date
         )
         context.insert(shop)
         let visit = Visit(
@@ -88,6 +81,138 @@ final class VisitStore: ObservableObject {
         context.insert(visit)
         try context.save()
         return visit
+    }
+
+    /// Builds the user entered Shop row for a typed in name, shared by the
+    /// check in save and the Sprint 4 visit correction. The shop is never
+    /// presented as verified directory data.
+    private func makeUnverifiedShop(
+        name: String,
+        address: String,
+        neighborhood: String,
+        coordinate: CLLocationCoordinate2D?,
+        at date: Date
+    ) -> Shop {
+        Shop(
+            id: UUID(),
+            name: name,
+            address: address,
+            neighborhood: neighborhood,
+            latitude: coordinate?.latitude ?? DetroitCenter.coordinate.latitude,
+            longitude: coordinate?.longitude ?? DetroitCenter.coordinate.longitude,
+            kind: .independent,
+            hours: .empty,
+            source: "Typed in by the user",
+            lastVerifiedDate: date,
+            isPublished: false,
+            isUserEntered: true
+        )
+    }
+
+    // MARK: - Memory joggers (Sprint 4, Stories S8 and S15)
+
+    /// Every companion name saved in the app, alphabetical, for the
+    /// "who was with you" picker. Contacts are never imported.
+    func savedCompanions() -> [Companion] {
+        let all = (try? context.fetch(FetchDescriptor<Companion>())) ?? []
+        return all.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+    }
+
+    /// Finds the companion with this name, ignoring case, or creates one.
+    /// Names are trimmed; an empty name is never saved.
+    @discardableResult
+    func companion(named name: String) -> Companion? {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let existing = savedCompanions().first(where: { $0.name.lowercased() == trimmed.lowercased() }) {
+            return existing
+        }
+        let companion = Companion(name: trimmed)
+        context.insert(companion)
+        try? context.save()
+        return companion
+    }
+
+    /// Applies the joggers from the Add Memory sheet to an existing visit:
+    /// rating, tags, order, note, companions, and the stored photo filename.
+    /// Empty text becomes nil, tags and companion names are trimmed and
+    /// deduplicated, and the visit's updated date moves to now.
+    func updateMemory(
+        for visit: Visit,
+        rating: Int?,
+        tags: [String],
+        orderText: String?,
+        note: String?,
+        companionNames: [String],
+        photoFilename: String?
+    ) throws {
+        visit.rating = rating.map { min(max($0, 1), 5) }
+        visit.tags = Self.cleanedList(tags)
+        visit.orderText = Self.cleanedText(orderText)
+        visit.note = Self.cleanedText(note)
+        visit.companionIDs = Self.cleanedList(companionNames)
+            .compactMap { companion(named: $0)?.id }
+        visit.photoFilename = photoFilename
+        visit.updatedAt = Date()
+        try context.save()
+    }
+
+    /// Points an existing visit at a different shop (Story S15, through
+    /// the Sprint 3 correction path). The visit keeps its date, source,
+    /// and joggers; only the shop fields change. No new visit is created.
+    func repointVisit(_ visit: Visit, to shop: Shop) throws {
+        visit.shopID = shop.id
+        visit.shopName = shop.name
+        visit.neighborhood = shop.neighborhood
+        visit.address = shop.address
+        visit.isUnverifiedShop = shop.isUserEntered
+        visit.updatedAt = Date()
+        try context.save()
+    }
+
+    /// Points an existing visit at a shop typed in by name. The new shop
+    /// is stored as user entered and flagged unverified, the same as a
+    /// typed name check in.
+    func repointVisitToTypedName(
+        _ visit: Visit,
+        name: String,
+        address: String,
+        neighborhood: String,
+        coordinate: CLLocationCoordinate2D?,
+        at date: Date = Date()
+    ) throws {
+        let shop = makeUnverifiedShop(
+            name: name,
+            address: address,
+            neighborhood: neighborhood,
+            coordinate: coordinate,
+            at: date
+        )
+        context.insert(shop)
+        try repointVisit(visit, to: shop)
+    }
+
+    /// Trims each entry, drops empties, and removes duplicates ignoring
+    /// case, keeping the first spelling.
+    private static func cleanedList(_ values: [String]) -> [String] {
+        var seen: Set<String> = []
+        var cleaned: [String] = []
+        for value in values {
+            let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { continue }
+            let key = trimmed.lowercased()
+            guard !seen.contains(key) else { continue }
+            seen.insert(key)
+            cleaned.append(trimmed)
+        }
+        return cleaned
+    }
+
+    /// Trims text; an empty or whitespace only value becomes nil.
+    private static func cleanedText(_ value: String?) -> String? {
+        guard let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !trimmed.isEmpty else { return nil }
+        return trimmed
     }
 
     // MARK: - Dismissals and the recovery card

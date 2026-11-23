@@ -27,6 +27,9 @@ final class CheckInManager: ObservableObject {
     @Published var pendingPrompt: PendingArrival?
     /// The visit just saved, shown in the confirmation sheet.
     @Published var savedVisit: Visit?
+    /// The visit the Add Memory sheet is open for (Sprint 4). Set from
+    /// the confirmation sheet after a save; cleared when the sheet closes.
+    @Published var memoryVisit: Visit?
     /// Set when a check in hits same day duplicate protection, so the UI
     /// opens the existing visit instead of creating a second one.
     @Published var duplicateVisit: Visit?
@@ -34,6 +37,10 @@ final class CheckInManager: ObservableObject {
     @Published var recoveryArrivals: [DismissedArrival] = []
     /// The shop a correction is being made from (Not This Shop flow).
     @Published var correctionSource: Shop?
+    /// The visit a correction is editing (Sprint 4, Story S15). When set,
+    /// picking a shop re-points this visit instead of saving a new one.
+    /// Only the Add Memory sheet sets this; the prompt flow never does.
+    var correctionTargetVisit: Visit?
 
     private let context: ModelContext
     private let visitStore: VisitStore
@@ -143,16 +150,83 @@ final class CheckInManager: ObservableObject {
 
     func startCorrection(for shopID: UUID) {
         pendingPrompt = nil
+        correctionTargetVisit = nil
         correctionSource = fetchShop(id: shopID)
     }
 
+    /// Picks the corrected shop. In the prompt flow this saves the check
+    /// in for the picked shop; when an edit is in progress it re-points
+    /// the existing visit instead, and no new visit is created.
     func correctCheckIn(to shop: Shop) {
         correctionSource = nil
+        if let target = correctionTargetVisit {
+            correctionTargetVisit = nil
+            do {
+                try visitStore.repointVisit(target, to: shop)
+            } catch {
+                print("Visit correction failed: \(error.localizedDescription)")
+            }
+            return
+        }
         save(shop: shop, source: .automatic)
     }
 
     func dismissCorrection() {
+        correctionTargetVisit = nil
         correctionSource = nil
+    }
+
+    // MARK: - Visit editing (Sprint 4, Story S15)
+
+    /// Starts a shop correction for an existing visit, from the Add Memory
+    /// sheet. The correction list is the Sprint 3 path; the target is what
+    /// makes it edit instead of check in.
+    func beginVisitCorrection(for visit: Visit) {
+        correctionTargetVisit = visit
+    }
+
+    /// Clears the edit target when the correction list is left without
+    /// picking a shop.
+    func endVisitCorrection() {
+        correctionTargetVisit = nil
+    }
+
+    /// Applies the joggers from the Add Memory sheet to a saved visit.
+    /// A failed save is logged, never silent, and the visit itself is
+    /// never at risk: it was already saved at check in.
+    func saveMemory(
+        for visit: Visit,
+        rating: Int?,
+        tags: [String],
+        orderText: String?,
+        note: String?,
+        companionNames: [String],
+        photoFilename: String?
+    ) {
+        do {
+            try visitStore.updateMemory(
+                for: visit,
+                rating: rating,
+                tags: tags,
+                orderText: orderText,
+                note: note,
+                companionNames: companionNames,
+                photoFilename: photoFilename
+            )
+        } catch {
+            print("Saving memory failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// Opens the Add Memory sheet for a saved visit, replacing the
+    /// confirmation sheet in the single check in sheet.
+    func openMemory(for visit: Visit) {
+        savedVisit = nil
+        memoryVisit = visit
+    }
+
+    func clearMemory() {
+        memoryVisit = nil
     }
 
     // MARK: - Notification actions
@@ -175,6 +249,21 @@ final class CheckInManager: ObservableObject {
     }
 
     func checkInByTypedName(name: String, neighborhood: String, address: String, coordinate: CLLocationCoordinate2D?) {
+        if let target = correctionTargetVisit {
+            correctionTargetVisit = nil
+            do {
+                try visitStore.repointVisitToTypedName(
+                    target,
+                    name: name,
+                    address: address,
+                    neighborhood: neighborhood,
+                    coordinate: coordinate
+                )
+            } catch {
+                print("Visit correction failed: \(error.localizedDescription)")
+            }
+            return
+        }
         do {
             let visit = try visitStore.saveUnverifiedVisit(
                 name: name,
@@ -217,9 +306,14 @@ final class CheckInManager: ObservableObject {
     /// Clears whichever check in sheet is showing after a swipe dismiss.
     /// A swiped away prompt counts as a dismissal: it saves nothing, never
     /// repeats for this arrival, and leaves the recovery card for today.
+    /// A swiped away memory sheet just closes; the visit stays saved.
     func dismissActiveSheet() {
         if pendingPrompt != nil {
             dismissPrompt()
+            return
+        }
+        if memoryVisit != nil {
+            clearMemory()
             return
         }
         if savedVisit != nil {

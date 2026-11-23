@@ -26,12 +26,14 @@ struct ContentView: View {
     private enum CheckInSheet: Identifiable {
         case prompt(PendingArrival)
         case confirmation(Visit)
+        case memory(Visit)
         case correction(Shop)
 
         var id: String {
             switch self {
             case .prompt(let prompt): return "prompt-\(prompt.shopID.uuidString)"
             case .confirmation(let visit): return "confirmation-\(visit.id.uuidString)"
+            case .memory(let visit): return "memory-\(visit.id.uuidString)"
             case .correction(let shop): return "correction-\(shop.id.uuidString)"
             }
         }
@@ -46,6 +48,9 @@ struct ContentView: View {
     private var activeSheet: CheckInSheet? {
         if let shop = checkInManager.correctionSource {
             return .correction(shop)
+        }
+        if let visit = checkInManager.memoryVisit {
+            return .memory(visit)
         }
         if let visit = checkInManager.savedVisit {
             return .confirmation(visit)
@@ -98,6 +103,9 @@ struct ContentView: View {
             case .confirmation(let visit):
                 CheckInConfirmationView(
                     visit: visit,
+                    onAddMemory: {
+                        checkInManager.openMemory(for: visit)
+                    },
                     onViewInVisited: {
                         checkInManager.clearConfirmation()
                         selectedTab = .visited
@@ -106,6 +114,8 @@ struct ContentView: View {
                         checkInManager.clearConfirmation()
                     }
                 )
+            case .memory(let visit):
+                AddMemoryView(visit: visit)
             case .correction(let shop):
                 CorrectionView(sourceShop: shop)
             }
