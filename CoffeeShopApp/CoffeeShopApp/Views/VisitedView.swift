@@ -18,6 +18,8 @@ struct VisitedView: View {
     @Query private var shops: [Shop]
     @Query private var settingsRows: [UserSettings]
     @EnvironmentObject private var checkInManager: CheckInManager
+    @EnvironmentObject private var syncManager: SyncManager
+    @Environment(\.modelContext) private var modelContext
 
     private enum Mode: String, CaseIterable {
         case list = "List"
@@ -27,7 +29,23 @@ struct VisitedView: View {
     @State private var mode: Mode = .list
     @State private var showManualCheckIn = false
     @State private var showSearch = false
+    @State private var showSignIn = false
     @State private var shareVisit: Visit?
+
+    /// The reminder card shows only after the third check in, only
+    /// when signed out, and only until it is dismissed once (Flow H
+    /// step 1). The banner fills in when the card is not showing.
+    private var showReminderCard: Bool {
+        !syncManager.isSignedIn
+            && visits.count >= 3
+            && settingsRows.first?.backupReminderDismissed != true
+    }
+
+    private var showBackupBanner: Bool {
+        !syncManager.isSignedIn
+            && syncManager.unsyncedVisitCount > 0
+            && !showReminderCard
+    }
 
     var body: some View {
         NavigationStack {
@@ -45,9 +63,27 @@ struct VisitedView: View {
                         modePicker
                             .padding(.top, 8)
                             .padding(.bottom, 4)
+                        if showReminderCard {
+                            BackupReminderCardView(
+                                visitCount: visits.count,
+                                onSignIn: { showSignIn = true },
+                                onDismiss: dismissReminderCard
+                            )
+                            .padding(.horizontal)
+                            .padding(.bottom, 8)
+                        } else if showBackupBanner {
+                            BackupBannerView { showSignIn = true }
+                                .padding(.horizontal)
+                                .padding(.bottom, 8)
+                        }
                         listView
                     }
                     .background(Color.appBackground)
+                }
+            }
+            .overlay(alignment: .bottom) {
+                if let deleted = checkInManager.deletedVisit {
+                    undoBar(for: deleted)
                 }
             }
             .navigationTitle("Visited")
@@ -77,6 +113,9 @@ struct VisitedView: View {
             }
             .sheet(isPresented: $showManualCheckIn) {
                 ManualCheckInView()
+            }
+            .sheet(isPresented: $showSignIn) {
+                SignInView()
             }
             .sheet(item: $shareVisit) { visit in
                 SharePreviewView(
@@ -121,12 +160,46 @@ struct VisitedView: View {
                         shareVisit = visit
                     }
                     .tint(.appAccent)
+                    Button("Delete", role: .destructive) {
+                        checkInManager.deleteVisit(visit)
+                    }
                 }
             }
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .background(Color.appBackground)
+    }
+
+    /// The Undo bar after a delete (Flow I step 1). It stays up for the
+    /// 10 second window, then the visit is gone for good.
+    private func undoBar(for deleted: DeletedVisitSnapshot) -> some View {
+        HStack(spacing: 12) {
+            Text("Visit to \(deleted.shopName) deleted.")
+                .font(.coffeeBody)
+                .foregroundStyle(.appPrimaryText)
+                .lineLimit(1)
+            Spacer()
+            Button("Undo") {
+                checkInManager.undoDelete()
+            }
+            .font(.coffeeBody.weight(.semibold))
+            .foregroundStyle(.appPrimaryText)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(.appPrimary, in: RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal)
+        .padding(.bottom, 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Visit to \(deleted.shopName) deleted. Undo.")
+    }
+
+    private func dismissReminderCard() {
+        guard let settings = settingsRows.first else { return }
+        settings.backupReminderDismissed = true
+        settings.updatedAt = Date()
+        try? modelContext.save()
     }
 
     private func companionNames(for visit: Visit) -> [String] {

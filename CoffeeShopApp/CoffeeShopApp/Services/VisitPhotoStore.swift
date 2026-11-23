@@ -62,9 +62,33 @@ enum VisitPhotoStore {
 
     /// Loads a stored photo, or nil when there is none or it cannot be read.
     static func load(filename: String, baseURL: URL? = nil) -> UIImage? {
-        let url = directoryURL(baseURL: baseURL).appendingPathComponent(filename)
-        guard let data = try? Data(contentsOf: url) else { return nil }
+        guard let data = data(filename: filename, baseURL: baseURL) else { return nil }
         return UIImage(data: data)
+    }
+
+    /// Reads the stored photo bytes, or nil when there is none. Sync
+    /// uploads these bytes; the image never needs decoding for that.
+    static func data(filename: String, baseURL: URL? = nil) -> Data? {
+        let url = directoryURL(baseURL: baseURL).appendingPathComponent(filename)
+        return try? Data(contentsOf: url)
+    }
+
+    /// Saves downloaded photo bytes for a visit (Sprint 6 sync). The
+    /// bytes come from the owner's own backup and are stored as-is.
+    @discardableResult
+    static func saveData(_ data: Data, for visitID: UUID, baseURL: URL? = nil) throws -> String {
+        let directory = directoryURL(baseURL: baseURL)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let filename = filename(for: visitID)
+        try data.write(to: directory.appendingPathComponent(filename), options: [.atomic])
+        return filename
+    }
+
+    /// Every photo filename in the folder, for the orphan cleanup.
+    /// Missing folders read as empty.
+    static func allFilenames(baseURL: URL? = nil) -> [String] {
+        let directory = directoryURL(baseURL: baseURL)
+        return (try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? []
     }
 
     /// Deletes a stored photo. Missing files are fine; nothing throws.

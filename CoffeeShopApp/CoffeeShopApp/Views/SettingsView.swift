@@ -1,32 +1,220 @@
 import SwiftUI
 import SwiftData
 
-/// Settings (Screen 16), Sprint 3 minimal version: the auto check in
-/// prompts toggle with its honest status line, location access status with
-/// a hand off to iOS Settings, and the sharing default. Sign in, backup,
-/// sign out, and account deletion arrive in Sprint 6; this screen says so
-/// instead of showing controls that cannot work yet.
+/// Settings (Screen 16): the account and backup sections (Sprint 6,
+/// Stories S13, S14) sit first, above the prompts, location, sharing,
+/// directory, and about sections. Signing out never deletes the local
+/// log; deleting the account does, and says so before it runs.
 struct SettingsView: View {
     @Query private var settingsRows: [UserSettings]
     @EnvironmentObject private var checkInManager: CheckInManager
     @EnvironmentObject private var locationService: LocationService
     @EnvironmentObject private var directoryStore: DirectoryStore
+    @EnvironmentObject private var syncManager: SyncManager
     @Environment(\.modelContext) private var modelContext
+
+    @State private var showSignIn = false
+    @State private var showSignOutConfirm = false
+    @State private var showDeleteConfirm = false
+    @State private var deleteInProgress = false
+    @State private var deleteError: String?
 
     private var settings: UserSettings? { settingsRows.first }
 
     var body: some View {
         NavigationStack {
             Form {
+                if showBackupBanner {
+                    backupBannerSection
+                }
+                accountSection
+                backupSection
                 promptsSection
                 locationSection
                 sharingSection
-                backupSection
                 directorySection
                 aboutSection
             }
             .navigationTitle("Settings")
+            .sheet(isPresented: $showSignIn) {
+                SignInView()
+            }
+            .confirmationDialog(
+                "Sign out?",
+                isPresented: $showSignOutConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Sign Out", role: .destructive) {
+                    Task { await syncManager.signOut() }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Your log stays on this phone. It will stop backing up until you sign in again.")
+            }
+            .confirmationDialog(
+                "Delete my account and data?",
+                isPresented: $showDeleteConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Delete Everything", role: .destructive) {
+                    deleteAccount()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This deletes your account, your backed up visits, your Want To Go list, your visit photos, and the log on this phone. This cannot be undone.")
+            }
+            .alert("Delete did not work", isPresented: deleteErrorBinding) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(deleteError ?? "Nothing was deleted. Please try again.")
+            }
         }
+    }
+
+    /// The banner shows only when signed out with visits waiting for
+    /// backup (Flow H step 4).
+    private var showBackupBanner: Bool {
+        !syncManager.isSignedIn && syncManager.unsyncedVisitCount > 0
+    }
+
+    private var backupBannerSection: some View {
+        Section {
+            BackupBannerView { showSignIn = true }
+        }
+    }
+
+    // MARK: - Account
+
+    private var accountSection: some View {
+        Section("Account") {
+            if syncManager.isSignedIn {
+                signedInRows
+            } else {
+                signedOutRows
+            }
+        }
+    }
+
+    private var signedOutRows: some View {
+        Group {
+            Text("Back up your Visited and Want To Go lists so a new phone keeps them.")
+                .font(.coffeeBody)
+                .foregroundStyle(.appText)
+            Button("Sign In for Backup") { showSignIn = true }
+        }
+    }
+
+    private var signedInRows: some View {
+        Group {
+            Text("Signed in with Apple")
+                .font(.coffeeBody)
+                .foregroundStyle(.appText)
+            if let displayName = syncManager.displayName, !displayName.isEmpty {
+                Text(displayName)
+                    .font(.coffeeSecondary)
+                    .foregroundStyle(.appTextSecondary)
+            }
+            if let email = syncManager.email, !email.isEmpty {
+                Text(email)
+                    .font(.coffeeSecondary)
+                    .foregroundStyle(.appTextSecondary)
+            }
+            Button("Sign Out") { showSignOutConfirm = true }
+            Button("Delete My Account and Data", role: .destructive) {
+                showDeleteConfirm = true
+            }
+            if deleteInProgress {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text("Deleting your account")
+                        .font(.coffeeSecondary)
+                        .foregroundStyle(.appTextSecondary)
+                }
+            }
+        }
+    }
+
+    // MARK: - Backup
+
+    private var backupSection: some View {
+        Section("Backup") {
+            Text(backupStatusText)
+                .font(.coffeeBody)
+                .foregroundStyle(.appText)
+            if let backupDetailText {
+                Text(backupDetailText)
+                    .font(.coffeeSecondary)
+                    .foregroundStyle(.appTextSecondary)
+            }
+            if syncManager.isSignedIn {
+                Button("Sync Now") {
+                    Task {
+                        do {
+                            _ = try await syncManager.syncNow()
+                        } catch {
+                            // The status line carries the failure.
+                        }
+                    }
+                }
+                .disabled(syncManager.status == .syncing)
+            }
+        }
+    }
+
+    private var backupStatusText: String {
+        switch syncManager.status {
+        case .signedOut:
+            return "Local Only. Your log lives on this phone."
+        case .notConfigured:
+            return "Backup Not Set Up. Your log lives on this phone."
+        case .idle(let lastSync, _):
+            if let lastSync {
+                return "Backed Up. Last backup \(mediumDate(lastSync))."
+            }
+            return "Backed Up."
+        case .syncing:
+            return "Syncing"
+        case .failed:
+            return "Backup did not finish. Your log is safe on this phone."
+        }
+    }
+
+    private var backupDetailText: String? {
+        switch syncManager.status {
+        case .signedOut:
+            return "Sign in to back up your log, so a new phone keeps it."
+        case .notConfigured:
+            return "The backup service is not set up yet. Your log stays on this phone until it is."
+        case .idle(_, let summary):
+            if syncManager.pendingCount > 0 {
+                return "\(syncManager.pendingCount) waiting for backup."
+            }
+            return summary
+        case .syncing:
+            return nil
+        case .failed(let message):
+            return message
+        }
+    }
+
+    private func deleteAccount() {
+        deleteInProgress = true
+        deleteError = nil
+        Task {
+            do {
+                try await syncManager.deleteAccount()
+            } catch {
+                deleteError = error.localizedDescription
+            }
+            deleteInProgress = false
+        }
+    }
+
+    private var deleteErrorBinding: Binding<Bool> {
+        Binding(
+            get: { deleteError != nil },
+            set: { if !$0 { deleteError = nil } }
+        )
     }
 
     // MARK: - Prompts
@@ -91,7 +279,7 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Sharing and backup
+    // MARK: - Sharing
 
     private var sharingSection: some View {
         Section("Sharing") {
@@ -119,17 +307,6 @@ struct SettingsView: View {
                 try? modelContext.save()
             }
         )
-    }
-
-    private var backupSection: some View {
-        Section("Backup") {
-            Text("Local Only. Your log lives on this phone.")
-                .font(.coffeeBody)
-                .foregroundStyle(.appText)
-            Text("Sign in for backup arrives in Sprint 6. Until then, your visits are safe on this phone but are not backed up anywhere else.")
-                .font(.coffeeSecondary)
-                .foregroundStyle(.appTextSecondary)
-        }
     }
 
     // MARK: - Directory and about

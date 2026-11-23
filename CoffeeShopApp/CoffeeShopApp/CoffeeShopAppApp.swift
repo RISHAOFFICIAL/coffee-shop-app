@@ -15,6 +15,8 @@ struct CoffeeShopAppApp: App {
     @StateObject private var directoryStore: DirectoryStore
     @StateObject private var locationService: LocationService
     @StateObject private var checkInManager: CheckInManager
+    @StateObject private var authManager: AuthManager
+    @StateObject private var syncManager: SyncManager
 
     init() {
         let container = Self.makeContainer()
@@ -26,9 +28,13 @@ struct CoffeeShopAppApp: App {
             locationService: locationService,
             notificationService: NotificationService.shared
         )
+        let authManager = AuthManager()
+        let syncManager = SyncManager(context: container.mainContext, auth: authManager)
         _directoryStore = StateObject(wrappedValue: directoryStore)
         _locationService = StateObject(wrappedValue: locationService)
         _checkInManager = StateObject(wrappedValue: checkInManager)
+        _authManager = StateObject(wrappedValue: authManager)
+        _syncManager = StateObject(wrappedValue: syncManager)
     }
 
     var body: some Scene {
@@ -38,9 +44,13 @@ struct CoffeeShopAppApp: App {
                 .environmentObject(directoryStore)
                 .environmentObject(locationService)
                 .environmentObject(checkInManager)
+                .environmentObject(authManager)
+                .environmentObject(syncManager)
                 .task {
                     await directoryStore.load()
                     checkInManager.startMonitoring()
+                    checkInManager.cleanupOrphanedPhotos()
+                    await syncManager.restoreSession()
                 }
         }
     }
@@ -53,6 +63,7 @@ struct CoffeeShopAppApp: App {
             Companion.self,
             UserSettings.self,
             DismissedArrival.self,
+            SyncedDeletion.self,
         ])
         do {
             return try ModelContainer(for: schema)

@@ -47,6 +47,7 @@ final class VisitStore: ObservableObject {
         context.insert(visit)
         try context.save()
         removeDismissal(for: shop.id, on: date)
+        notifyChanged()
         return (visit, false)
     }
 
@@ -80,6 +81,7 @@ final class VisitStore: ObservableObject {
         )
         context.insert(visit)
         try context.save()
+        notifyChanged()
         return visit
     }
 
@@ -154,7 +156,11 @@ final class VisitStore: ObservableObject {
             .compactMap { companion(named: $0)?.id }
         visit.photoFilename = photoFilename
         visit.updatedAt = Date()
+        if visit.syncState == .synced {
+            visit.syncState = .pending
+        }
         try context.save()
+        notifyChanged()
     }
 
     /// Points an existing visit at a different shop (Story S15, through
@@ -167,7 +173,11 @@ final class VisitStore: ObservableObject {
         visit.address = shop.address
         visit.isUnverifiedShop = shop.isUserEntered
         visit.updatedAt = Date()
+        if visit.syncState == .synced {
+            visit.syncState = .pending
+        }
         try context.save()
+        notifyChanged()
     }
 
     /// Points an existing visit at a shop typed in by name. The new shop
@@ -190,6 +200,75 @@ final class VisitStore: ObservableObject {
         )
         context.insert(shop)
         try repointVisit(visit, to: shop)
+    }
+
+    // MARK: - Delete with Undo (Sprint 6, Story S13)
+
+    /// Deletes a visit and returns a snapshot the Undo bar can restore.
+    /// A visit that was already backed up leaves a tombstone, so the
+    /// next sync deletes it from the backup too; a local-only visit
+    /// leaves nothing behind. The photo file stays until the Undo
+    /// window expires; CheckInManager removes it then.
+    @discardableResult
+    func deleteVisit(_ visit: Visit) throws -> DeletedVisitSnapshot {
+        let snapshot = DeletedVisitSnapshot(from: visit)
+        if visit.syncState == .synced {
+            SyncedDeletion.record(recordID: visit.id, kind: .visit, in: context)
+        }
+        context.delete(visit)
+        try context.save()
+        notifyChanged()
+        return snapshot
+    }
+
+    /// Restores a visit deleted inside the Undo window, with the same
+    /// id, so a synced restore does not duplicate the backup row. The
+    /// tombstone is removed, so the next sync keeps the remote row.
+    func restoreVisit(from snapshot: DeletedVisitSnapshot) throws {
+        SyncedDeletion.remove(recordID: snapshot.id, kind: .visit, in: context)
+        context.insert(snapshot.makeVisit())
+        try context.save()
+        notifyChanged()
+    }
+
+    /// Deletes photo files no visit references any more, including
+    /// stale drafts and files from visits a sync replaced. Runs on
+    /// launch, so the folder never grows without bound. Tests pass a
+    /// temporary folder; the app always uses the real one.
+    func cleanupOrphanedPhotos(baseURL: URL? = nil) {
+        let referenced: Set<String>
+        do {
+            let visits = try context.fetch(FetchDescriptor<Visit>())
+            referenced = Set(visits.compactMap(\.photoFilename))
+        } catch {
+            return
+        }
+        for filename in VisitPhotoStore.allFilenames(baseURL: baseURL) where !referenced.contains(filename) {
+            VisitPhotoStore.delete(filename: filename, baseURL: baseURL)
+        }
+    }
+
+    /// Marks every visit and Want To Go entry local again, for sign out:
+    /// the next sign in backs the whole log up through the merge rule.
+    func markAllLocal() {
+        do {
+            for visit in try context.fetch(FetchDescriptor<Visit>()) {
+                visit.syncState = .local
+            }
+            for entry in try context.fetch(FetchDescriptor<WantToGoEntry>()) {
+                entry.syncState = .local
+            }
+            try context.save()
+        } catch {
+            // Sign out must not fail on this; the records simply stay
+            // marked and the next sync re-uploads them anyway.
+        }
+    }
+
+    /// Tells SyncManager something changed. Local saves never wait for
+    /// the network; the sync follows on its own.
+    private func notifyChanged() {
+        NotificationCenter.default.post(name: .coffeeShopDataChanged, object: nil)
     }
 
     /// Trims each entry, drops empties, and removes duplicates ignoring
@@ -260,6 +339,76 @@ final class VisitStore: ObservableObject {
             context.delete(arrival)
         }
         try? context.save()
+    }
+}
+
+/// A deleted visit, kept in memory for the Undo window (Sprint 6,
+/// Story S13). Plain data, not a SwiftData model, so it survives the
+/// row being deleted. Restoring re-inserts the visit with the same id.
+struct DeletedVisitSnapshot: Equatable {
+    let id: UUID
+    let shopID: UUID
+    let shopName: String
+    let neighborhood: String
+    let address: String
+    let checkedInAt: Date
+    let sourceRaw: String
+    let rating: Int?
+    let tags: [String]
+    let orderText: String?
+    let note: String?
+    let companionIDs: [UUID]
+    let photoFilename: String?
+    let isUnverifiedShop: Bool
+    let createdAt: Date
+    let updatedAt: Date
+    let syncStateRaw: String
+    /// True when the visit was backed up, so the Undo bar can say the
+    /// restore brings it back to the backup too.
+    let wasSynced: Bool
+
+    init(from visit: Visit) {
+        id = visit.id
+        shopID = visit.shopID
+        shopName = visit.shopName
+        neighborhood = visit.neighborhood
+        address = visit.address
+        checkedInAt = visit.checkedInAt
+        sourceRaw = visit.sourceRaw
+        rating = visit.rating
+        tags = visit.tags
+        orderText = visit.orderText
+        note = visit.note
+        companionIDs = visit.companionIDs
+        photoFilename = visit.photoFilename
+        isUnverifiedShop = visit.isUnverifiedShop
+        createdAt = visit.createdAt
+        updatedAt = visit.updatedAt
+        syncStateRaw = visit.syncStateRaw
+        wasSynced = visit.syncState == .synced
+    }
+
+    func makeVisit() -> Visit {
+        let visit = Visit(
+            id: id,
+            shopID: shopID,
+            shopName: shopName,
+            neighborhood: neighborhood,
+            address: address,
+            checkedInAt: checkedInAt,
+            source: VisitSource(rawValue: sourceRaw) ?? .manual,
+            isUnverifiedShop: isUnverifiedShop,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        )
+        visit.rating = rating
+        visit.tags = tags
+        visit.orderText = orderText
+        visit.note = note
+        visit.companionIDs = companionIDs
+        visit.photoFilename = photoFilename
+        visit.syncStateRaw = syncStateRaw
+        return visit
     }
 }
 

@@ -41,6 +41,14 @@ final class CheckInManager: ObservableObject {
     /// picking a shop re-points this visit instead of saving a new one.
     /// Only the Add Memory sheet sets this; the prompt flow never does.
     var correctionTargetVisit: Visit?
+    /// The visit just deleted, kept for the 10 second Undo window
+    /// (Sprint 6, Story S13). The Visited Undo bar shows while set.
+    @Published var deletedVisit: DeletedVisitSnapshot?
+    /// The Undo window timer. Cancelled on Undo or on a new delete.
+    private var deleteExpiryTask: Task<Void, Never>?
+    /// Observes remote settings changes from sync, so a prompts flip
+    /// on another device starts or stops monitoring here.
+    private var settingsChangedObserver: NSObjectProtocol?
 
     private let context: ModelContext
     private let visitStore: VisitStore
@@ -85,8 +93,22 @@ final class CheckInManager: ObservableObject {
         notificationService.onDismissAction = { [weak self] shopID in
             Task { @MainActor in self?.dismissFromNotification(shopID: shopID) }
         }
+        settingsChangedObserver = NotificationCenter.default.addObserver(
+            forName: .coffeeShopSettingsChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.syncPromptsSetting() }
+        }
 
         refreshRecovery()
+    }
+
+    deinit {
+        if let settingsChangedObserver {
+            NotificationCenter.default.removeObserver(settingsChangedObserver)
+        }
+        deleteExpiryTask?.cancel()
     }
 
     // MARK: - Region events
@@ -408,11 +430,72 @@ final class CheckInManager: ObservableObject {
         recoveryArrivals = visitStore.todaysDismissals()
     }
 
+    // MARK: - Delete with Undo (Sprint 6, Story S13)
+
+    /// Deletes a visit and starts the 10 second Undo window. A delete
+    /// in progress is finalized first, so only one Undo bar ever shows.
+    /// The photo file stays until the window expires, so Undo restores
+    /// the visit whole.
+    func deleteVisit(_ visit: Visit) {
+        if let pending = deletedVisit {
+            finalizeDeletion(of: pending)
+        }
+        deleteExpiryTask?.cancel()
+        guard let snapshot = try? visitStore.deleteVisit(visit) else { return }
+        deletedVisit = snapshot
+        deleteExpiryTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(10))
+            guard !Task.isCancelled else { return }
+            guard let self, let current = self.deletedVisit, current.id == snapshot.id else { return }
+            self.finalizeDeletion(of: current)
+            self.deletedVisit = nil
+        }
+    }
+
+    /// Restores the deleted visit, whole, with the same id. The photo
+    /// file was never removed, and the tombstone is cleared, so the
+    /// backup row survives the next sync.
+    func undoDelete() {
+        deleteExpiryTask?.cancel()
+        guard let snapshot = deletedVisit else { return }
+        deletedVisit = nil
+        try? visitStore.restoreVisit(from: snapshot)
+    }
+
+    /// The Undo window expired: the photo file goes, and the visit is
+    /// gone from Visited, search, and the map. The backup row follows
+    /// on the next sync, through the tombstone.
+    private func finalizeDeletion(of snapshot: DeletedVisitSnapshot) {
+        if let filename = snapshot.photoFilename {
+            VisitPhotoStore.delete(filename: filename)
+        }
+    }
+
+    /// Removes photo files no visit references, including stale drafts.
+    /// Runs on launch; the app owns the folder, so nothing else in it
+    /// is ever deleted by mistake.
+    func cleanupOrphanedPhotos() {
+        visitStore.cleanupOrphanedPhotos()
+    }
+
     // MARK: - Helpers
 
     func fetchShop(id: UUID) -> Shop? {
         var descriptor = FetchDescriptor<Shop>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
         return try? context.fetch(descriptor).first
+    }
+
+    /// Reapplies the prompts setting after a remote sync changed it:
+    /// prompts on starts monitoring, prompts off stops it and cancels
+    /// pending prompts. The setting itself is never written here.
+    private func syncPromptsSetting() {
+        if promptsEnabled {
+            startMonitoring()
+        } else {
+            locationService.stopAllMonitoring()
+            notificationService.cancelAllArrivalPrompts()
+            pendingPrompt = nil
+        }
     }
 }

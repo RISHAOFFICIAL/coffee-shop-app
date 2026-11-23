@@ -16,47 +16,69 @@ struct WantToGoView: View {
     @Query private var shops: [Shop]
     @EnvironmentObject private var locationService: LocationService
     @EnvironmentObject private var checkInManager: CheckInManager
+    @EnvironmentObject private var syncManager: SyncManager
     @Environment(\.modelContext) private var modelContext
+
+    @State private var showSignIn = false
+
+    /// The banner shows only when signed out with visits waiting for
+    /// backup (Flow H step 4). It sits above the list either way, so
+    /// it is visible in both the empty and filled states.
+    private var showBackupBanner: Bool {
+        !syncManager.isSignedIn && syncManager.unsyncedVisitCount > 0
+    }
 
     var body: some View {
         NavigationStack {
-            Group {
-                if entries.isEmpty {
-                    emptyState
-                } else {
-                    List {
-                        ForEach(entries) { entry in
-                            WantToGoRowView(
-                                entry: entry,
-                                shop: shops.first { $0.id == entry.shopID },
-                                distanceText: distanceText(for: entry),
-                                onDirections: { openDirections(for: entry) },
-                                onCheckIn: { checkInManager.checkInFromWantToGo(entry) }
-                            )
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                            .swipeActions(edge: .trailing) {
-                                Button("Remove", role: .destructive) {
-                                    WantToGoStore(context: modelContext).remove(entry)
+            VStack(spacing: 0) {
+                if showBackupBanner {
+                    BackupBannerView { showSignIn = true }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .padding(.bottom, 4)
+                }
+                Group {
+                    if entries.isEmpty {
+                        emptyState
+                    } else {
+                        List {
+                            ForEach(entries) { entry in
+                                WantToGoRowView(
+                                    entry: entry,
+                                    shop: shops.first { $0.id == entry.shopID },
+                                    distanceText: distanceText(for: entry),
+                                    onDirections: { openDirections(for: entry) },
+                                    onCheckIn: { checkInManager.checkInFromWantToGo(entry) }
+                                )
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                                .swipeActions(edge: .trailing) {
+                                    Button("Remove", role: .destructive) {
+                                        WantToGoStore(context: modelContext).remove(entry)
+                                    }
                                 }
                             }
+                            Text("Not visited yet. A shop moves to Visited only when you check in there.")
+                                .font(.coffeeSecondary)
+                                .foregroundStyle(.appTextSecondary)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .multilineTextAlignment(.center)
+                                .padding(.vertical, 8)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
                         }
-                        Text("Not visited yet. A shop moves to Visited only when you check in there.")
-                            .font(.coffeeSecondary)
-                            .foregroundStyle(.appTextSecondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, 8)
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .background(Color.appBackground)
                     }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .background(Color.appBackground)
+                }
+                .background(Color.appBackground)
+                .navigationTitle("Want To Go")
+                .sheet(isPresented: $showSignIn) {
+                    SignInView()
                 }
             }
-            .navigationTitle("Want To Go")
         }
     }
 

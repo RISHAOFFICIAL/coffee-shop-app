@@ -14,6 +14,15 @@ final class UserSettings {
     var sharerName: String?
     var lastPromptDate: Date?
     var lastPromptShopName: String?
+    /// The last successful backup, for the Settings status line.
+    var lastSyncAt: Date?
+    /// The counted confirmation from the last sync, for example
+    /// "12 visits backed up, 1 duplicate merged."
+    var lastSyncSummary: String?
+    /// True once the Visited backup reminder card has been dismissed.
+    /// The card appears only after the third check in, and only once
+    /// (Flow H step 1).
+    var backupReminderDismissed: Bool
     var updatedAt: Date
 
     init(
@@ -24,6 +33,9 @@ final class UserSettings {
         sharerName: String? = nil,
         lastPromptDate: Date? = nil,
         lastPromptShopName: String? = nil,
+        lastSyncAt: Date? = nil,
+        lastSyncSummary: String? = nil,
+        backupReminderDismissed: Bool = false,
         updatedAt: Date = Date()
     ) {
         self.id = id
@@ -33,6 +45,9 @@ final class UserSettings {
         self.sharerName = sharerName
         self.lastPromptDate = lastPromptDate
         self.lastPromptShopName = lastPromptShopName
+        self.lastSyncAt = lastSyncAt
+        self.lastSyncSummary = lastSyncSummary
+        self.backupReminderDismissed = backupReminderDismissed
         self.updatedAt = updatedAt
     }
 

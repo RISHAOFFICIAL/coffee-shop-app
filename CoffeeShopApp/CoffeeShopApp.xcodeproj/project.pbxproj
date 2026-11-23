@@ -61,6 +61,20 @@
 		700000000000000000000053 /* VisitedSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000053 /* VisitedSearchTests.swift */; };
 		700000000000000000000054 /* SharingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000054 /* SharingTests.swift */; };
 		700000000000000000000055 /* WantToGoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000055 /* WantToGoTests.swift */; };
+		700000000000000000000056 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000056 /* KeychainHelper.swift */; };
+		700000000000000000000057 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000057 /* AuthManager.swift */; };
+		700000000000000000000058 /* SupabaseSyncClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000058 /* SupabaseSyncClient.swift */; };
+		700000000000000000000059 /* SyncPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000059 /* SyncPlan.swift */; };
+		700000000000000000000060 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000060 /* SyncManager.swift */; };
+		700000000000000000000061 /* SyncedDeletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000061 /* SyncedDeletion.swift */; };
+		700000000000000000000062 /* SyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000062 /* SyncState.swift */; };
+		700000000000000000000063 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000063 /* SignInView.swift */; };
+		700000000000000000000064 /* BackupBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000064 /* BackupBannerView.swift */; };
+		700000000000000000000066 /* SyncPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000066 /* SyncPlanTests.swift */; };
+		700000000000000000000067 /* SyncDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000067 /* SyncDTOTests.swift */; };
+		700000000000000000000068 /* VisitDeletionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000068 /* VisitDeletionTests.swift */; };
+		700000000000000000000069 /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000069 /* KeychainHelperTests.swift */; };
+		700000000000000000000070 /* SupabaseSyncClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600000000000000000000070 /* SupabaseSyncClientTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +144,21 @@
 		600000000000000000000053 /* VisitedSearchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitedSearchTests.swift; sourceTree = "<group>"; };
 		600000000000000000000054 /* SharingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharingTests.swift; sourceTree = "<group>"; };
 		600000000000000000000055 /* WantToGoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WantToGoTests.swift; sourceTree = "<group>"; };
+		600000000000000000000056 /* KeychainHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		600000000000000000000057 /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		600000000000000000000058 /* SupabaseSyncClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupabaseSyncClient.swift; sourceTree = "<group>"; };
+		600000000000000000000059 /* SyncPlan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncPlan.swift; sourceTree = "<group>"; };
+		600000000000000000000060 /* SyncManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
+		600000000000000000000061 /* SyncedDeletion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncedDeletion.swift; sourceTree = "<group>"; };
+		600000000000000000000062 /* SyncState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncState.swift; sourceTree = "<group>"; };
+		600000000000000000000063 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		600000000000000000000064 /* BackupBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackupBannerView.swift; sourceTree = "<group>"; };
+		600000000000000000000065 /* CoffeeShopApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = CoffeeShopApp.entitlements; sourceTree = "<group>"; };
+		600000000000000000000066 /* SyncPlanTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncPlanTests.swift; sourceTree = "<group>"; };
+		600000000000000000000067 /* SyncDTOTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncDTOTests.swift; sourceTree = "<group>"; };
+		600000000000000000000068 /* VisitDeletionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitDeletionTests.swift; sourceTree = "<group>"; };
+		600000000000000000000069 /* KeychainHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainHelperTests.swift; sourceTree = "<group>"; };
+		600000000000000000000070 /* SupabaseSyncClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupabaseSyncClientTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +202,7 @@
 			children = (
 				600000000000000000000001 /* CoffeeShopAppApp.swift */,
 				600000000000000000000002 /* ContentView.swift */,
+				600000000000000000000065 /* CoffeeShopApp.entitlements */,
 				100000000000000000000006 /* Views */,
 				100000000000000000000007 /* Components */,
 				600000000000000000000005 /* Assets.xcassets */,
@@ -196,6 +226,11 @@
 				600000000000000000000053 /* VisitedSearchTests.swift */,
 				600000000000000000000054 /* SharingTests.swift */,
 				600000000000000000000055 /* WantToGoTests.swift */,
+				600000000000000000000066 /* SyncPlanTests.swift */,
+				600000000000000000000067 /* SyncDTOTests.swift */,
+				600000000000000000000068 /* VisitDeletionTests.swift */,
+				600000000000000000000069 /* KeychainHelperTests.swift */,
+				600000000000000000000070 /* SupabaseSyncClientTests.swift */,
 			);
 			path = CoffeeShopAppTests;
 			sourceTree = "<group>";
@@ -220,6 +255,8 @@
 				600000000000000000000050 /* VisitedMapView.swift */,
 				600000000000000000000051 /* SharePreviewView.swift */,
 				600000000000000000000052 /* SharedShopLandingView.swift */,
+				600000000000000000000063 /* SignInView.swift */,
+				600000000000000000000064 /* BackupBannerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -244,6 +281,8 @@
 				600000000000000000000012 /* UserSettings.swift */,
 				600000000000000000000013 /* DismissedArrival.swift */,
 				600000000000000000000014 /* SyncSupport.swift */,
+				600000000000000000000061 /* SyncedDeletion.swift */,
+				600000000000000000000062 /* SyncState.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -259,6 +298,9 @@
 				600000000000000000000045 /* VisitedSearch.swift */,
 				600000000000000000000046 /* SharePayload.swift */,
 				600000000000000000000047 /* WantToGoStore.swift */,
+				600000000000000000000058 /* SupabaseSyncClient.swift */,
+				600000000000000000000059 /* SyncPlan.swift */,
+				600000000000000000000060 /* SyncManager.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -272,6 +314,8 @@
 				600000000000000000000023 /* CheckInManager.swift */,
 				600000000000000000000043 /* VisitPhotoStore.swift */,
 				600000000000000000000048 /* Directions.swift */,
+				600000000000000000000056 /* KeychainHelper.swift */,
+				600000000000000000000057 /* AuthManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -427,6 +471,15 @@
 				700000000000000000000050 /* VisitedMapView.swift in Sources */,
 				700000000000000000000051 /* SharePreviewView.swift in Sources */,
 				700000000000000000000052 /* SharedShopLandingView.swift in Sources */,
+				700000000000000000000056 /* KeychainHelper.swift in Sources */,
+				700000000000000000000057 /* AuthManager.swift in Sources */,
+				700000000000000000000058 /* SupabaseSyncClient.swift in Sources */,
+				700000000000000000000059 /* SyncPlan.swift in Sources */,
+				700000000000000000000060 /* SyncManager.swift in Sources */,
+				700000000000000000000061 /* SyncedDeletion.swift in Sources */,
+				700000000000000000000062 /* SyncState.swift in Sources */,
+				700000000000000000000063 /* SignInView.swift in Sources */,
+				700000000000000000000064 /* BackupBannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,6 +496,11 @@
 				700000000000000000000053 /* VisitedSearchTests.swift in Sources */,
 				700000000000000000000054 /* SharingTests.swift in Sources */,
 				700000000000000000000055 /* WantToGoTests.swift in Sources */,
+				700000000000000000000066 /* SyncPlanTests.swift in Sources */,
+				700000000000000000000067 /* SyncDTOTests.swift in Sources */,
+				700000000000000000000068 /* VisitDeletionTests.swift in Sources */,
+				700000000000000000000069 /* KeychainHelperTests.swift in Sources */,
+				700000000000000000000070 /* SupabaseSyncClientTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,6 +632,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoffeeShopApp/CoffeeShopApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -612,6 +671,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CoffeeShopApp/CoffeeShopApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;

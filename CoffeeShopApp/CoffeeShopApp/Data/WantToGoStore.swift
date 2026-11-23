@@ -47,6 +47,7 @@ final class WantToGoStore: ObservableObject {
         )
         context.insert(entry)
         try? context.save()
+        notifyChanged()
         return entry
     }
 
@@ -78,14 +79,21 @@ final class WantToGoStore: ObservableObject {
         )
         context.insert(entry)
         try? context.save()
+        notifyChanged()
         return entry
     }
 
     /// Removes one entry. Used by the save toggle, the list swipe, and
     /// the check in from Want To Go, which moves the shop into Visited.
+    /// An entry that was already backed up leaves a tombstone, so the
+    /// next sync deletes it from the backup too (Sprint 6).
     func remove(_ entry: WantToGoEntry) {
+        if entry.syncState == .synced {
+            SyncedDeletion.record(recordID: entry.id, kind: .wantToGo, in: context)
+        }
         context.delete(entry)
         try? context.save()
+        notifyChanged()
     }
 
     /// Removes the entry for a shop id, if one is saved. No-op otherwise.
@@ -93,5 +101,11 @@ final class WantToGoStore: ObservableObject {
         if let entry = entry(forShopID: shopID) {
             remove(entry)
         }
+    }
+
+    /// Tells SyncManager something changed. Local saves never wait for
+    /// the network; the sync follows on its own.
+    private func notifyChanged() {
+        NotificationCenter.default.post(name: .coffeeShopDataChanged, object: nil)
     }
 }

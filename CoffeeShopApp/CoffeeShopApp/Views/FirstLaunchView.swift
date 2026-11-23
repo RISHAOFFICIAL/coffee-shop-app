@@ -18,6 +18,7 @@ struct FirstLaunchView: View {
     }
 
     @State private var page: Page = .intro
+    @State private var showSignIn = false
 
     var body: some View {
         ZStack {
@@ -34,6 +35,9 @@ struct FirstLaunchView: View {
             }
             .padding(CoffeeSpacing.screenMargin)
             .animation(.easeInOut, value: page)
+        }
+        .sheet(isPresented: $showSignIn) {
+            SignInView(onDoneAfterSignIn: onComplete)
         }
     }
 
@@ -126,15 +130,19 @@ struct FirstLaunchView: View {
                 .font(.coffeeTitle)
                 .foregroundStyle(.appText)
                 .multilineTextAlignment(.center)
-            Text("Every check in saves on this phone first, even with no signal. Sign in for backup arrives in a later update. Until then, your log is safe here and nowhere else.")
+            Text("Every check in saves on this phone first, even with no signal. Sign in to back up your log, so a new phone keeps it. Without an account, your log lives only on this phone.")
                 .font(.coffeeBody)
                 .foregroundStyle(.appTextSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 16)
-            Button("Start Exploring Detroit") {
-                onComplete()
+            Button("Sign In for Backup") {
+                showSignIn = true
             }
             .buttonStyle(PrimaryButtonStyle())
+            Button("Continue Without An Account") {
+                onComplete()
+            }
+            .buttonStyle(SecondaryButtonStyle())
         }
     }
 

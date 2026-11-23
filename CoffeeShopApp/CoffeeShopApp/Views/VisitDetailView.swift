@@ -9,8 +9,9 @@ import UIKit
 /// that sheet for the same visit (Story S15). Share opens the share
 /// preview (Story S11); Directions and Check In Again are here too; and
 /// the Visits To This Shop section is the entry point to the shop's full
-/// history. Delete arrives with Sprint 6 (Story S13); this screen shows
-/// only what exists, with no dead buttons.
+/// history. Delete (Sprint 6, Story S13) sits at the bottom of the
+/// actions, with a confirmation naming the shop and date, and the Undo
+/// bar appears in Visited after it runs.
 struct VisitDetailView: View {
     let visit: Visit
 
@@ -19,9 +20,11 @@ struct VisitDetailView: View {
     @Query private var shops: [Shop]
     @Query private var settingsRows: [UserSettings]
     @EnvironmentObject private var checkInManager: CheckInManager
+    @Environment(\.dismiss) private var dismiss
 
     @State private var showMemory = false
     @State private var showShare = false
+    @State private var showDeleteConfirm = false
     @State private var photoImage: UIImage?
 
     /// Companion names for this visit, in the order they were added.
@@ -213,7 +216,31 @@ struct VisitDetailView: View {
                 }
                 .buttonStyle(SecondaryButtonStyle())
             }
+            Button("Delete This Visit", role: .destructive) {
+                showDeleteConfirm = true
+            }
+            .buttonStyle(SecondaryButtonStyle())
         }
+        .confirmationDialog(
+            "Delete this visit?",
+            isPresented: $showDeleteConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("Delete Visit", role: .destructive) {
+                checkInManager.deleteVisit(visit)
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This deletes your visit to \(visit.shopName) on \(shortDate). You can undo it for a few seconds after.")
+        }
+    }
+
+    private var shortDate: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: visit.checkedInAt)
     }
 
     /// Every visit to this shop, newest first, each row opening that

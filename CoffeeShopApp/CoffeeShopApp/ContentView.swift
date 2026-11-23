@@ -11,7 +11,9 @@ import SwiftData
 struct ContentView: View {
     @EnvironmentObject private var checkInManager: CheckInManager
     @EnvironmentObject private var locationService: LocationService
+    @EnvironmentObject private var syncManager: SyncManager
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var settingsRows: [UserSettings]
 
     private enum AppTab: Hashable {
@@ -103,6 +105,13 @@ struct ContentView: View {
         .onChange(of: locationService.authorizationStatus) { _, _ in
             // Authorization granted after first launch: start watching.
             checkInManager.startMonitoring()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            // Back to the front: back up anything that changed while
+            // the app was away, when signed in.
+            if newPhase == .active {
+                Task { await syncManager.syncIfNeeded() }
+            }
         }
         .fullScreenCover(isPresented: .constant(!hasCompletedFirstLaunch)) {
             FirstLaunchView(onComplete: completeFirstLaunch)
