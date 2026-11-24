@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// Coffee Shop App, native iOS.
+/// Cupmarks, native iOS.
 /// Stage 6 build plan (approved Oct 22, 2026): Apple only, SwiftUI, iOS 26.
 /// Sprint 1 wires the SwiftData store, the directory pipeline, and the
 /// check in services into the app. The first Xcode Cloud build is the

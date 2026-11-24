@@ -644,7 +644,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Coffee Shop App";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cupmarks";
 				INFOPLIST_KEY_CFBundleURLTypes = "{\n    CFBundleTypeRole = Editor;\n    CFBundleURLName = \"com.lexissapphirestudio.coffeeshopapp\";\n    CFBundleURLSchemes =     (\n        coffeeshopapp\n    );\n}";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Take a photo of your coffee to save with your visit.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Always access lets check in prompts appear when the app is closed. Your location never leaves this phone for prompts.";
@@ -677,7 +677,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Coffee Shop App";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cupmarks";
 				INFOPLIST_KEY_CFBundleURLTypes = "{\n    CFBundleTypeRole = Editor;\n    CFBundleURLName = \"com.lexissapphirestudio.coffeeshopapp\";\n    CFBundleURLSchemes =     (\n        coffeeshopapp\n    );\n}";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Take a photo of your coffee to save with your visit.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Always access lets check in prompts appear when the app is closed. Your location never leaves this phone for prompts.";

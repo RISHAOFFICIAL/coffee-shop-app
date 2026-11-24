@@ -51,7 +51,7 @@ struct FirstLaunchView: View {
             Image(systemName: "cup.and.saucer.fill")
                 .font(.system(size: 64))
                 .foregroundStyle(.appAccent)
-            Text("Coffee Shop App")
+            Text("Cupmarks")
                 .font(.coffeeTitle)
                 .foregroundStyle(.appText)
             VStack(alignment: .leading, spacing: 12) {

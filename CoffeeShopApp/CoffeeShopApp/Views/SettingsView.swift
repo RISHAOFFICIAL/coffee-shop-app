@@ -372,7 +372,7 @@ struct SettingsView: View {
 
     private var aboutSection: some View {
         Section("About") {
-            Text("Coffee Shop App, version 1.0")
+            Text("Cupmarks, version 1.0")
                 .font(.coffeeBody)
                 .foregroundStyle(.appText)
             Text("Working title. The final app name is still to be decided.")
