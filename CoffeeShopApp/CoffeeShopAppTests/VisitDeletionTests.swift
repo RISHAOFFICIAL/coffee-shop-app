@@ -92,7 +92,7 @@ struct VisitDeletionTests {
     }
 
     @Test func snapshotKeepsShopAndDate() throws {
-        let (store, _) = try makeStore()
+        let (store, context) = try makeStore()
         let visit = try savedVisit(in: store, synced: false, context: context)
         let snapshot = try store.deleteVisit(visit)
         #expect(snapshot.shopName == "Test Coffee")
