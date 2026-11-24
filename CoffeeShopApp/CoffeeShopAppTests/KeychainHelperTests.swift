@@ -6,7 +6,10 @@ import Testing
 /// Apple user id, the display name and email Apple shared once, and the
 /// Supabase tokens. Values round trip, deletes remove them, and clearing
 /// the session leaves nothing behind. Tests clean up after themselves,
-/// so no test value survives in the Keychain.
+/// so no test value survives in the Keychain. Serialized: every test
+/// shares the one device Keychain, so parallel runs would read each
+/// other's values.
+@Suite(.serialized)
 struct KeychainHelperTests {
     @Test func saveLoadAndDeleteRoundTrip() {
         KeychainHelper.save("test-user-123", for: .appleUserID)

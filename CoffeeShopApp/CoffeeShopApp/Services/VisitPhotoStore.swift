@@ -115,15 +115,23 @@ enum VisitPhotoStore {
     }
 
     /// Shrinks an image to at most `limit` on the long edge, keeping its
-    /// aspect ratio. Smaller images come back unchanged. The thumbnail
-    /// loader uses a small limit; saving uses `maxDimension`.
+    /// aspect ratio. Smaller images come back unchanged. The limit is in
+    /// pixels, not points: a 3x screenshot measures its full pixel size
+    /// here, and the render runs at scale 1, so the stored file never
+    /// exceeds the limit on disk. The thumbnail loader uses a small
+    /// limit; saving uses `maxDimension`.
     static func downscaled(_ image: UIImage, toMaxDimension limit: CGFloat) -> UIImage {
-        let size = image.size
-        let longest = max(size.width, size.height)
+        let pixelSize = CGSize(
+            width: image.size.width * image.scale,
+            height: image.size.height * image.scale
+        )
+        let longest = max(pixelSize.width, pixelSize.height)
         guard longest > limit else { return image }
         let scale = limit / longest
-        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
-        let renderer = UIGraphicsImageRenderer(size: newSize)
+        let newSize = CGSize(width: pixelSize.width * scale, height: pixelSize.height * scale)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
         return renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: newSize))
         }

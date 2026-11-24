@@ -5,7 +5,10 @@ import Testing
 /// The Supabase sync client (Sprint 6, Story S14) against a stubbed
 /// URLSession: requests hit the right endpoints with the right headers,
 /// responses decode, and a missing backend fails honestly instead of
-/// hanging. No network call ever leaves the test process.
+/// hanging. No network call ever leaves the test process. Serialized:
+/// every test shares the one static mock handler, so parallel runs
+/// would answer each other's requests.
+@Suite(.serialized)
 struct SupabaseSyncClientTests {
     /// Intercepts every request and answers from the handler the test
     /// sets. The last request is kept for assertions.

@@ -35,7 +35,13 @@ struct VisitMemoryTests {
     }
 
     private func makeImage(width: CGFloat, height: CGFloat) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
+        // Scale 1: the pixel size is the point size, so the saved JPEG
+        // round trips at exactly these dimensions. The default renderer
+        // format uses the device scale (3x on this simulator), which
+        // would triple every dimension on load.
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: format)
         return renderer.image { context in
             UIColor.brown.setFill()
             context.fill(CGRect(x: 0, y: 0, width: width, height: height))

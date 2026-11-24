@@ -115,8 +115,9 @@ struct ShopFilterTests {
 
     @Test func nearestExcludesSampleShopsAndTheSourceShop() {
         let center = CLLocation(latitude: 42.3314, longitude: -83.0458)
-        let source = Self.fixtures[0]
-        let results = ShopFilter.nearest(to: center, from: Self.fixtures, excluding: source.id, limit: 5)
+        let shops = Self.fixtures
+        let source = shops[0]
+        let results = ShopFilter.nearest(to: center, from: shops, excluding: source.id, limit: 5)
         #expect(results.contains { $0.id == source.id } == false)
         #expect(results.count == 2)
     }

@@ -129,8 +129,9 @@ enum SyncPlan {
         for dto in remainingRemote {
             if let match = remainingLocalByShop[dto.shopId] {
                 if dto.updatedAt > match.updatedAt {
-                    plan.toInsert.append(dto)
-                    plan.toDeleteLocal.append(match)
+                    // Same shop, newer backup copy: refresh the local
+                    // row in place, like the same-id path above.
+                    plan.toUpdateLocal.append((local: match, remote: dto))
                 } else {
                     plan.toUpload.append(match)
                     plan.toDeleteRemoteIDs.append(dto.id)
