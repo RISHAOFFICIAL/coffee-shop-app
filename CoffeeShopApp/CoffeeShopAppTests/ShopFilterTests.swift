@@ -110,7 +110,7 @@ struct ShopFilterTests {
     }
 
     @Test func neighborhoodsListIsSortedAndUnique() {
-        #expect(ShopFilter.neighborhoods(in: fixtures) == ["Corktown", "Midtown"])
+        #expect(ShopFilter.neighborhoods(in: Self.fixtures) == ["Corktown", "Midtown"])
     }
 
     @Test func nearestExcludesSampleShopsAndTheSourceShop() {

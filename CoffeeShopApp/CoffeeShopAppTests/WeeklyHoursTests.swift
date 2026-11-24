@@ -35,22 +35,22 @@ struct WeeklyHoursTests {
 
     @Test func openDuringHours() {
         // Wednesday Nov 18, 10 am.
-        #expect(weekdayHours.isOpen(at: Self.date(day: 18, hour: 10), calendar: Self.detroitCalendar) == true)
+        #expect(Self.weekdayHours.isOpen(at: Self.date(day: 18, hour: 10), calendar: Self.detroitCalendar) == true)
     }
 
     @Test func closedBeforeOpening() {
         // Wednesday Nov 18, 6 am.
-        #expect(weekdayHours.isOpen(at: Self.date(day: 18, hour: 6), calendar: Self.detroitCalendar) == false)
+        #expect(Self.weekdayHours.isOpen(at: Self.date(day: 18, hour: 6), calendar: Self.detroitCalendar) == false)
     }
 
     @Test func closedAfterClosing() {
         // Wednesday Nov 18, 7 pm.
-        #expect(weekdayHours.isOpen(at: Self.date(day: 18, hour: 19), calendar: Self.detroitCalendar) == false)
+        #expect(Self.weekdayHours.isOpen(at: Self.date(day: 18, hour: 19), calendar: Self.detroitCalendar) == false)
     }
 
     @Test func closedOnClosedDay() {
         // Sunday Nov 22, 10 am. Sunday is nil, so closed.
-        #expect(weekdayHours.isOpen(at: Self.date(day: 22, hour: 10), calendar: Self.detroitCalendar) == false)
+        #expect(Self.weekdayHours.isOpen(at: Self.date(day: 22, hour: 10), calendar: Self.detroitCalendar) == false)
     }
 
     @Test func unknownWhenNoHoursAtAll() {
@@ -70,11 +70,11 @@ struct WeeklyHoursTests {
     }
 
     @Test func closingTextWhileOpen() {
-        #expect(weekdayHours.closingText(at: Self.date(day: 18, hour: 10), calendar: Self.detroitCalendar) == "until 6 pm")
+        #expect(Self.weekdayHours.closingText(at: Self.date(day: 18, hour: 10), calendar: Self.detroitCalendar) == "until 6 pm")
     }
 
     @Test func noClosingTextWhileClosed() {
-        #expect(weekdayHours.closingText(at: Self.date(day: 18, hour: 19), calendar: Self.detroitCalendar) == nil)
+        #expect(Self.weekdayHours.closingText(at: Self.date(day: 18, hour: 19), calendar: Self.detroitCalendar) == nil)
     }
 
     @Test func displayTimeFormats() {
@@ -85,7 +85,7 @@ struct WeeklyHoursTests {
     }
 
     @Test func summaryLinesShowClosedDays() {
-        let lines = weekdayHours.summaryLines()
+        let lines = Self.weekdayHours.summaryLines()
         #expect(lines.count == 7)
         #expect(lines[0].day == "Mon")
         #expect(lines[0].text == "7 am to 6 pm")
