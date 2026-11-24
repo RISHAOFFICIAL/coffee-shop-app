@@ -14,14 +14,25 @@ enum SupabaseJSON {
     static func encoder() -> JSONEncoder {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        encoder.dateEncodingStrategy = .formatted(makeFormatter())
+        encoder.dateEncodingStrategy = .custom { date, encoder in
+            var container = encoder.singleValueContainer()
+            try container.encode(makeFormatter().string(from: date))
+        }
         return encoder
     }
 
     static func decoder() -> JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .formatted(makeFormatter())
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let string = try container.decode(String.self)
+            guard let date = makeFormatter().date(from: string) else {
+                throw DecodingError.dataCorruptedError(
+                    in: container, debugDescription: "Invalid ISO 8601 date: \(string)")
+            }
+            return date
+        }
         return decoder
     }
 }

@@ -127,7 +127,7 @@ enum SyncPlan {
 
         let remainingLocalByShop = Dictionary(uniqueKeysWithValues: remainingLocal.map { ($0.shopID, $0) })
         for dto in remainingRemote {
-            if let match = remainingLocalByShop[dto.shopID] {
+            if let match = remainingLocalByShop[dto.shopId] {
                 if dto.updatedAt > match.updatedAt {
                     plan.toInsert.append(dto)
                     plan.toDeleteLocal.append(match)

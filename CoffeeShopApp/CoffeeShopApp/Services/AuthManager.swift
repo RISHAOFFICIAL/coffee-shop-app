@@ -60,10 +60,11 @@ final class AuthManager: ObservableObject {
         }
 
         KeychainHelper.save(credential.user, for: .appleUserID)
-        if let fullName = credential.fullName,
-           let formatted = PersonNameComponentsFormatter().string(from: fullName),
-           !formatted.isEmpty {
-            KeychainHelper.save(formatted, for: .appleDisplayName)
+        if let fullName = credential.fullName {
+            let formatted = PersonNameComponentsFormatter().string(from: fullName)
+            if !formatted.isEmpty {
+                KeychainHelper.save(formatted, for: .appleDisplayName)
+            }
         }
         if let email = credential.email, !email.isEmpty {
             KeychainHelper.save(email, for: .appleEmail)
