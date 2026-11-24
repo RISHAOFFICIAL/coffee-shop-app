@@ -54,6 +54,26 @@ struct SupabaseSyncClientTests {
         HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)!
     }
 
+    /// The request body as text. The URL loading system hands a custom
+    /// protocol the body as a stream, not as httpBody, so the mock reads
+    /// the stream when httpBody is empty.
+    private static func bodyString(of request: URLRequest) -> String {
+        if let data = request.httpBody, !data.isEmpty {
+            return String(data: data, encoding: .utf8) ?? ""
+        }
+        guard let stream = request.httpBodyStream else { return "" }
+        stream.open()
+        defer { stream.close() }
+        var data = Data()
+        var buffer = [UInt8](repeating: 0, count: 1024)
+        while stream.hasBytesAvailable {
+            let count = stream.read(&buffer, maxLength: buffer.count)
+            if count <= 0 { break }
+            data.append(buffer, count: count)
+        }
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+
     private static func visitJSON(id: UUID, shopName: String) -> String {
         """
         {"id":"\(id.uuidString)","owner_id":"\(UUID().uuidString)","shop_id":"\(UUID().uuidString)","shop_name":"\(shopName)","neighborhood":"Midtown","address":"1 Test Street","checked_in_at":"2026-11-23T15:04:05.123+00:00","source":"manual","rating":5,"tags":["Cozy"],"order_text":"Latte","note":null,"companion_ids":[],"photo_path":null,"is_unverified_shop":false,"created_at":"2026-11-23T15:04:05.123+00:00","updated_at":"2026-11-23T15:04:05.123+00:00"}
@@ -111,7 +131,7 @@ struct SupabaseSyncClientTests {
             #expect(request.url?.path == "/auth/v1/token")
             #expect(request.url?.query?.contains("grant_type=id_token") == true)
             #expect(request.value(forHTTPHeaderField: "apikey") == "test-anon-key")
-            let body = String(data: request.httpBody ?? Data(), encoding: .utf8) ?? ""
+            let body = Self.bodyString(of: request)
             #expect(body.contains("apple"))
             #expect(body.contains("identity-token"))
             let sessionJSON = """
@@ -129,7 +149,7 @@ struct SupabaseSyncClientTests {
     @Test func refreshSessionPostsRefreshGrant() async throws {
         let client = Self.makeClient { request in
             #expect(request.url?.query?.contains("grant_type=refresh_token") == true)
-            let body = String(data: request.httpBody ?? Data(), encoding: .utf8) ?? ""
+            let body = Self.bodyString(of: request)
             #expect(body.contains("old-refresh"))
             let sessionJSON = """
             {"access_token":"refreshed-access","refresh_token":"refreshed-refresh","expires_in":3600,"user":{"id":"\(UUID().uuidString)"}}

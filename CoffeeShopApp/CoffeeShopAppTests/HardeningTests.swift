@@ -144,7 +144,13 @@ struct HardeningTests {
     // MARK: - Photo thumbnails (VisitPhotoStore)
 
     private func makeImage(width: CGFloat, height: CGFloat) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
+        // Scale 1: the pixel size is the point size, so the saved JPEG
+        // round trips at exactly these dimensions. The default renderer
+        // format uses the device scale (3x on this simulator), which
+        // would triple every dimension on load.
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: format)
         return renderer.image { _ in
             UIColor.brown.setFill()
             UIRectFill(CGRect(x: 0, y: 0, width: width, height: height))

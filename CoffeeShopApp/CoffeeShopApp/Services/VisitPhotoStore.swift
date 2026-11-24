@@ -128,7 +128,12 @@ enum VisitPhotoStore {
         let longest = max(pixelSize.width, pixelSize.height)
         guard longest > limit else { return image }
         let scale = limit / longest
-        let newSize = CGSize(width: pixelSize.width * scale, height: pixelSize.height * scale)
+        // Whole pixels, rounded down: the renderer rounds a fractional
+        // size up, which would put the stored file a pixel over the cap.
+        let newSize = CGSize(
+            width: floor(pixelSize.width * scale),
+            height: floor(pixelSize.height * scale)
+        )
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         let renderer = UIGraphicsImageRenderer(size: newSize, format: format)

@@ -142,6 +142,7 @@ enum SyncPlan {
         }
         for entry in remainingLocal where !plan.toUpload.contains(where: { $0.id == entry.id })
             && !plan.toDeleteLocal.contains(where: { $0.id == entry.id })
+            && !plan.toUpdateLocal.contains(where: { $0.local.id == entry.id })
             && entry.syncState != .synced {
             plan.toUpload.append(entry)
         }
