@@ -22,7 +22,6 @@ enum KeychainHelper {
     }
 
     @discardableResult
-    @discardableResult
     static func save(_ value: String, for key: Key) -> Bool {
         guard let data = value.data(using: .utf8) else { return false }
         let query: [String: Any] = [
@@ -59,7 +58,6 @@ enum KeychainHelper {
         return String(data: data, encoding: .utf8)
     }
 
-    @discardableResult
     @discardableResult
     static func delete(for key: Key) -> Bool {
         let query: [String: Any] = [
