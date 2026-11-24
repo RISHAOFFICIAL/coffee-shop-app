@@ -61,6 +61,30 @@ extension Color {
     static let softBrown = Color.appTextSecondary
 }
 
+/// The same tokens on ShapeStyle, so `.foregroundStyle(.appAccent)` and
+/// other leading-dot style call sites resolve: those look up members on
+/// ShapeStyle, not on Color.
+extension ShapeStyle where Self == Color {
+    static var appBackground: Color { Color.appBackground }
+    static var appSurface: Color { Color.appSurface }
+    static var appSurfaceAlt: Color { Color.appSurfaceAlt }
+    static var appText: Color { Color.appText }
+    static var appTextSecondary: Color { Color.appTextSecondary }
+    static var appPrimary: Color { Color.appPrimary }
+    static var appPrimaryText: Color { Color.appPrimaryText }
+    static var appAccent: Color { Color.appAccent }
+    static var appChipBackground: Color { Color.appChipBackground }
+    static var appChipText: Color { Color.appChipText }
+    static var appLine: Color { Color.appLine }
+    static var openGreen: Color { Color.openGreen }
+    static var closedRed: Color { Color.closedRed }
+    static var espresso: Color { Color.espresso }
+    static var caramel: Color { Color.caramel }
+    static var cream: Color { Color.cream }
+    static var inkBrown: Color { Color.inkBrown }
+    static var softBrown: Color { Color.softBrown }
+}
+
 /// Type scale from the hi-fi spec (SF Pro), mapped to the matching
 /// semantic text styles so Dynamic Type scales every size: a user who
 /// reads at an accessibility size gets larger text instead of clipped
