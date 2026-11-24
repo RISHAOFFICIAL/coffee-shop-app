@@ -98,12 +98,14 @@ struct WantToGoTests {
     @Test func entriesListNewestFirst() throws {
         let (store, _, context) = try makeStores()
         let older = WantToGoEntry(
+            shopID: UUID(),
             shopName: "Older Shop",
             neighborhood: "Downtown",
             address: "1 Old Road",
             addedAt: Date(timeIntervalSince1970: 1_788_000_000)
         )
         let newer = WantToGoEntry(
+            shopID: UUID(),
             shopName: "Newer Shop",
             neighborhood: "Midtown",
             address: "2 New Road",

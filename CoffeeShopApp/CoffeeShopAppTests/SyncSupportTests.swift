@@ -17,7 +17,7 @@ struct SyncSupportTests {
         components.month = 11
         components.day = day
         components.hour = hour
-        return detroitCalendar.date(from: components)!
+        return Self.detroitCalendar.date(from: components)!
     }
 
     private static func makeVisit(shopID: UUID, day: Int, joggers: Int) -> Visit {
@@ -26,7 +26,7 @@ struct SyncSupportTests {
             shopName: "Test Coffee",
             neighborhood: "Midtown",
             address: "1 Test Street",
-            checkedInAt: date(day: day, hour: 10),
+            checkedInAt: Self.date(day: day, hour: 10),
             source: .manual
         )
         if joggers >= 1 { visit.rating = 5 }
@@ -37,8 +37,8 @@ struct SyncSupportTests {
 
     @Test func sameShopSameDayMergesIntoOne() {
         let shopID = UUID()
-        let local = [makeVisit(shopID: shopID, day: 18, joggers: 0)]
-        let remote = [makeVisit(shopID: shopID, day: 18, joggers: 0)]
+        let local = [Self.makeVisit(shopID: shopID, day: 18, joggers: 0)]
+        let remote = [Self.makeVisit(shopID: shopID, day: 18, joggers: 0)]
         let result = VisitMerge.merge(local: local, remote: remote, calendar: Self.detroitCalendar)
         #expect(result.merged.count == 1)
         #expect(result.duplicatesMerged == 1)
@@ -46,8 +46,8 @@ struct SyncSupportTests {
 
     @Test func versionWithMoreJoggersWins() {
         let shopID = UUID()
-        let local = [makeVisit(shopID: shopID, day: 18, joggers: 0)]
-        let remote = [makeVisit(shopID: shopID, day: 18, joggers: 3)]
+        let local = [Self.makeVisit(shopID: shopID, day: 18, joggers: 0)]
+        let remote = [Self.makeVisit(shopID: shopID, day: 18, joggers: 3)]
         let result = VisitMerge.merge(local: local, remote: remote, calendar: Self.detroitCalendar)
         #expect(result.merged.count == 1)
         #expect(result.merged.first?.joggerCount == 3)
@@ -55,16 +55,16 @@ struct SyncSupportTests {
 
     @Test func differentDaysStaySeparate() {
         let shopID = UUID()
-        let local = [makeVisit(shopID: shopID, day: 18, joggers: 0)]
-        let remote = [makeVisit(shopID: shopID, day: 19, joggers: 0)]
+        let local = [Self.makeVisit(shopID: shopID, day: 18, joggers: 0)]
+        let remote = [Self.makeVisit(shopID: shopID, day: 19, joggers: 0)]
         let result = VisitMerge.merge(local: local, remote: remote, calendar: Self.detroitCalendar)
         #expect(result.merged.count == 2)
         #expect(result.duplicatesMerged == 0)
     }
 
     @Test func differentShopsStaySeparate() {
-        let local = [makeVisit(shopID: UUID(), day: 18, joggers: 0)]
-        let remote = [makeVisit(shopID: UUID(), day: 18, joggers: 0)]
+        let local = [Self.makeVisit(shopID: UUID(), day: 18, joggers: 0)]
+        let remote = [Self.makeVisit(shopID: UUID(), day: 18, joggers: 0)]
         let result = VisitMerge.merge(local: local, remote: remote, calendar: Self.detroitCalendar)
         #expect(result.merged.count == 2)
         #expect(result.duplicatesMerged == 0)

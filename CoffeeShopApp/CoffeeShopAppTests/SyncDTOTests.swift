@@ -16,7 +16,7 @@ struct SyncDTOTests {
             shopName: "Test Coffee",
             neighborhood: "Midtown",
             address: "1 Test Street",
-            checkedInAt: stamp,
+            checkedInAt: Self.stamp,
             source: .manual,
             rating: 5,
             tags: ["Cozy", "Quiet"],
@@ -25,8 +25,8 @@ struct SyncDTOTests {
             companionIDs: [UUID(uuidString: "33333333-3333-3333-3333-333333333333")!],
             photoFilename: "some-id.jpg",
             isUnverifiedShop: false,
-            createdAt: stamp,
-            updatedAt: stamp
+            createdAt: Self.stamp,
+            updatedAt: Self.stamp
         )
         return visit
     }

@@ -18,7 +18,7 @@ struct WeeklyHoursTests {
         components.day = day
         components.hour = hour
         components.minute = minute
-        return detroitCalendar.date(from: components)!
+        return Self.detroitCalendar.date(from: components)!
     }
 
     private static var weekdayHours: WeeklyHours {

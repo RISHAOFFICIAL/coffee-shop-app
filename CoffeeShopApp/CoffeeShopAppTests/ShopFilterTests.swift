@@ -18,7 +18,7 @@ struct ShopFilterTests {
         components.month = 11
         components.day = day
         components.hour = hour
-        return detroitCalendar.date(from: components)!
+        return Self.detroitCalendar.date(from: components)!
     }
 
     private static func makeShop(
@@ -69,27 +69,27 @@ struct ShopFilterTests {
 
     private static var fixtures: [Shop] {
         [
-            makeShop(name: "Midtown Roasters", neighborhood: "Midtown", kind: .independent, hours: openAllDay),
-            makeShop(name: "Corktown Chain", neighborhood: "Corktown", kind: .chain, hours: openAllDay),
-            makeShop(name: "Morning Cup", neighborhood: "Midtown", kind: .independent, hours: morningOnly),
+            Self.makeShop(name: "Midtown Roasters", neighborhood: "Midtown", kind: .independent, hours: Self.openAllDay),
+            Self.makeShop(name: "Corktown Chain", neighborhood: "Corktown", kind: .chain, hours: Self.openAllDay),
+            Self.makeShop(name: "Morning Cup", neighborhood: "Midtown", kind: .independent, hours: Self.morningOnly),
         ]
     }
 
     @Test func searchByName() {
-        let results = ShopFilter.apply(fixtures, criteria: ShopFilterCriteria(searchText: "roasters"))
+        let results = ShopFilter.apply(Self.fixtures, criteria: ShopFilterCriteria(searchText: "roasters"))
         #expect(results.count == 1)
         #expect(results.first?.name == "Midtown Roasters")
     }
 
     @Test func searchByNeighborhood() {
-        let results = ShopFilter.apply(fixtures, criteria: ShopFilterCriteria(searchText: "midtown"))
+        let results = ShopFilter.apply(Self.fixtures, criteria: ShopFilterCriteria(searchText: "midtown"))
         #expect(results.count == 2)
     }
 
     @Test func openNowHidesClosedShops() {
         // Wednesday Nov 18, 3 pm: Morning Cup closed at noon.
         let results = ShopFilter.apply(
-            fixtures,
+            Self.fixtures,
             criteria: ShopFilterCriteria(openNowOnly: true),
             now: Self.date(day: 18, hour: 15)
         )
@@ -98,13 +98,13 @@ struct ShopFilterTests {
     }
 
     @Test func independentOnlyHidesChains() {
-        let results = ShopFilter.apply(fixtures, criteria: ShopFilterCriteria(independentOnly: true))
+        let results = ShopFilter.apply(Self.fixtures, criteria: ShopFilterCriteria(independentOnly: true))
         #expect(results.count == 2)
         #expect(results.contains { $0.name == "Corktown Chain" } == false)
     }
 
     @Test func neighborhoodFilter() {
-        let results = ShopFilter.apply(fixtures, criteria: ShopFilterCriteria(neighborhood: "Corktown"))
+        let results = ShopFilter.apply(Self.fixtures, criteria: ShopFilterCriteria(neighborhood: "Corktown"))
         #expect(results.count == 1)
         #expect(results.first?.name == "Corktown Chain")
     }
@@ -115,8 +115,8 @@ struct ShopFilterTests {
 
     @Test func nearestExcludesSampleShopsAndTheSourceShop() {
         let center = CLLocation(latitude: 42.3314, longitude: -83.0458)
-        let source = fixtures[0]
-        let results = ShopFilter.nearest(to: center, from: fixtures, excluding: source.id, limit: 5)
+        let source = Self.fixtures[0]
+        let results = ShopFilter.nearest(to: center, from: Self.fixtures, excluding: source.id, limit: 5)
         #expect(results.contains { $0.id == source.id } == false)
         #expect(results.count == 2)
     }

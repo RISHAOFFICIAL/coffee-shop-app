@@ -20,7 +20,7 @@ struct SyncPlanTests {
         components.month = 11
         components.day = day
         components.hour = hour
-        return detroitCalendar.date(from: components)!
+        return Self.detroitCalendar.date(from: components)!
     }
 
     private static func makeVisit(
@@ -36,7 +36,7 @@ struct SyncPlanTests {
             shopName: "Test Coffee",
             neighborhood: "Midtown",
             address: "1 Test Street",
-            checkedInAt: date(day: day),
+            checkedInAt: Self.date(day: day),
             source: .manual,
             createdAt: updatedAt,
             updatedAt: updatedAt
@@ -55,7 +55,7 @@ struct SyncPlanTests {
 
     @Test func remoteOnlyVisitInserts() {
         let shopID = UUID()
-        let remote = dto(for: makeVisit(shopID: shopID, day: 18))
+        let remote = Self.dto(for: Self.makeVisit(shopID: shopID, day: 18))
         let plan = SyncPlan.visits(local: [], remote: [remote], calendar: Self.detroitCalendar)
         #expect(plan.toInsert.count == 1)
         #expect(plan.toUpload.isEmpty)
@@ -64,7 +64,7 @@ struct SyncPlanTests {
 
     @Test func localOnlyVisitUploads() {
         let shopID = UUID()
-        let local = makeVisit(shopID: shopID, day: 18)
+        let local = Self.makeVisit(shopID: shopID, day: 18)
         let plan = SyncPlan.visits(local: [local], remote: [], calendar: Self.detroitCalendar)
         #expect(plan.toUpload.count == 1)
         #expect(plan.toInsert.isEmpty)
@@ -73,8 +73,8 @@ struct SyncPlanTests {
 
     @Test func sameDayDuplicateMergesWithLocalWinnerUploading() {
         let shopID = UUID()
-        let local = makeVisit(shopID: shopID, day: 18, joggers: 3)
-        let remote = dto(for: makeVisit(shopID: shopID, day: 18, joggers: 0))
+        let local = Self.makeVisit(shopID: shopID, day: 18, joggers: 3)
+        let remote = Self.dto(for: Self.makeVisit(shopID: shopID, day: 18, joggers: 0))
         let plan = SyncPlan.visits(local: [local], remote: [remote], calendar: Self.detroitCalendar)
         #expect(plan.duplicatesMerged == 1)
         #expect(plan.toUpload.count == 1)
@@ -86,8 +86,8 @@ struct SyncPlanTests {
 
     @Test func sameDayDuplicateMergesWithRemoteWinnerInserting() {
         let shopID = UUID()
-        let local = makeVisit(shopID: shopID, day: 18, joggers: 0)
-        let remote = dto(for: makeVisit(shopID: shopID, day: 18, joggers: 3))
+        let local = Self.makeVisit(shopID: shopID, day: 18, joggers: 0)
+        let remote = Self.dto(for: Self.makeVisit(shopID: shopID, day: 18, joggers: 3))
         let plan = SyncPlan.visits(local: [local], remote: [remote], calendar: Self.detroitCalendar)
         #expect(plan.duplicatesMerged == 1)
         #expect(plan.toInsert.count == 1)
@@ -101,8 +101,8 @@ struct SyncPlanTests {
     @Test func sameIdNewerRemoteUpdatesLocal() {
         let id = UUID()
         let shopID = UUID()
-        let local = makeVisit(id: id, shopID: shopID, day: 18, updatedAt: date(day: 18, hour: 9))
-        let remote = dto(for: makeVisit(id: id, shopID: shopID, day: 18, updatedAt: date(day: 18, hour: 11)))
+        let local = Self.makeVisit(id: id, shopID: shopID, day: 18, updatedAt: Self.date(day: 18, hour: 9))
+        let remote = Self.dto(for: Self.makeVisit(id: id, shopID: shopID, day: 18, updatedAt: Self.date(day: 18, hour: 11)))
         let plan = SyncPlan.visits(local: [local], remote: [remote], calendar: Self.detroitCalendar)
         #expect(plan.toUpdateLocal.count == 1)
         #expect(plan.toUpdateLocal.first?.0.id == id)
@@ -113,8 +113,8 @@ struct SyncPlanTests {
     @Test func sameIdNewerLocalUploads() {
         let id = UUID()
         let shopID = UUID()
-        let local = makeVisit(id: id, shopID: shopID, day: 18, updatedAt: date(day: 18, hour: 11))
-        let remote = dto(for: makeVisit(id: id, shopID: shopID, day: 18, updatedAt: date(day: 18, hour: 9)))
+        let local = Self.makeVisit(id: id, shopID: shopID, day: 18, updatedAt: Self.date(day: 18, hour: 11))
+        let remote = Self.dto(for: Self.makeVisit(id: id, shopID: shopID, day: 18, updatedAt: Self.date(day: 18, hour: 9)))
         let plan = SyncPlan.visits(local: [local], remote: [remote], calendar: Self.detroitCalendar)
         #expect(plan.toUpload.count == 1)
         #expect(plan.toUpdateLocal.isEmpty)
@@ -124,9 +124,9 @@ struct SyncPlanTests {
     @Test func sameIdSameDateIsInSync() {
         let id = UUID()
         let shopID = UUID()
-        let stamp = date(day: 18, hour: 10)
-        let local = makeVisit(id: id, shopID: shopID, day: 18, updatedAt: stamp)
-        let remote = dto(for: makeVisit(id: id, shopID: shopID, day: 18, updatedAt: stamp))
+        let stamp = Self.date(day: 18, hour: 10)
+        let local = Self.makeVisit(id: id, shopID: shopID, day: 18, updatedAt: stamp)
+        let remote = Self.dto(for: Self.makeVisit(id: id, shopID: shopID, day: 18, updatedAt: stamp))
         let plan = SyncPlan.visits(local: [local], remote: [remote], calendar: Self.detroitCalendar)
         #expect(plan.toUpload.isEmpty)
         #expect(plan.toInsert.isEmpty)
@@ -136,8 +136,8 @@ struct SyncPlanTests {
 
     @Test func differentDaysStaySeparate() {
         let shopID = UUID()
-        let local = makeVisit(shopID: shopID, day: 18)
-        let remote = dto(for: makeVisit(shopID: shopID, day: 19))
+        let local = Self.makeVisit(shopID: shopID, day: 18)
+        let remote = Self.dto(for: Self.makeVisit(shopID: shopID, day: 19))
         let plan = SyncPlan.visits(local: [local], remote: [remote], calendar: Self.detroitCalendar)
         #expect(plan.toUpload.count == 1)
         #expect(plan.toInsert.count == 1)
@@ -164,9 +164,9 @@ struct SyncPlanTests {
 
     @Test func wantToGoMergesByShopID() {
         let shopID = UUID()
-        let local = makeEntry(shopID: shopID, updatedAt: date(day: 18, hour: 9))
+        let local = Self.makeEntry(shopID: shopID, updatedAt: Self.date(day: 18, hour: 9))
         let remote = WantToGoDTO(
-            from: makeEntry(shopID: shopID, updatedAt: date(day: 18, hour: 11)),
+            from: Self.makeEntry(shopID: shopID, updatedAt: Self.date(day: 18, hour: 11)),
             ownerID: UUID()
         )
         let plan = SyncPlan.wantToGo(local: [local], remote: [remote])
@@ -175,8 +175,8 @@ struct SyncPlanTests {
     }
 
     @Test func wantToGoLocalOnlyUploadsAndRemoteOnlyInserts() {
-        let local = makeEntry(shopID: UUID())
-        let remote = WantToGoDTO(from: makeEntry(shopID: UUID()), ownerID: UUID())
+        let local = Self.makeEntry(shopID: UUID())
+        let remote = WantToGoDTO(from: Self.makeEntry(shopID: UUID()), ownerID: UUID())
         let plan = SyncPlan.wantToGo(local: [local], remote: [remote])
         #expect(plan.toUpload.count == 1)
         #expect(plan.toInsert.count == 1)
@@ -185,9 +185,9 @@ struct SyncPlanTests {
 
     @Test func wantToGoNewerLocalUploadsAndDeletesRemoteCopy() {
         let shopID = UUID()
-        let local = makeEntry(shopID: shopID, updatedAt: date(day: 18, hour: 11))
+        let local = Self.makeEntry(shopID: shopID, updatedAt: Self.date(day: 18, hour: 11))
         let remote = WantToGoDTO(
-            from: makeEntry(shopID: shopID, updatedAt: date(day: 18, hour: 9)),
+            from: Self.makeEntry(shopID: shopID, updatedAt: Self.date(day: 18, hour: 9)),
             ownerID: UUID()
         )
         let plan = SyncPlan.wantToGo(local: [local], remote: [remote])
@@ -218,14 +218,14 @@ struct SyncPlanTests {
     // MARK: - Settings
 
     @Test func settingsPlanComparesUpdatedAt() {
-        let settings = UserSettings(updatedAt: date(day: 18, hour: 10))
+        let settings = UserSettings(updatedAt: Self.date(day: 18, hour: 10))
         let ownerID = UUID()
         #expect(SyncPlan.settings(local: settings, remote: nil) == .uploadLocal)
-        let newerRemote = UserSettingsDTO(from: UserSettings(updatedAt: date(day: 18, hour: 11)), userID: ownerID)
+        let newerRemote = UserSettingsDTO(from: UserSettings(updatedAt: Self.date(day: 18, hour: 11)), userID: ownerID)
         #expect(SyncPlan.settings(local: settings, remote: newerRemote) == .applyRemote(newerRemote))
-        let olderRemote = UserSettingsDTO(from: UserSettings(updatedAt: date(day: 18, hour: 9)), userID: ownerID)
+        let olderRemote = UserSettingsDTO(from: UserSettings(updatedAt: Self.date(day: 18, hour: 9)), userID: ownerID)
         #expect(SyncPlan.settings(local: settings, remote: olderRemote) == .uploadLocalNewer)
-        let sameRemote = UserSettingsDTO(from: UserSettings(updatedAt: date(day: 18, hour: 10)), userID: ownerID)
+        let sameRemote = UserSettingsDTO(from: UserSettings(updatedAt: Self.date(day: 18, hour: 10)), userID: ownerID)
         #expect(SyncPlan.settings(local: settings, remote: sameRemote) == .inSync)
     }
 }
