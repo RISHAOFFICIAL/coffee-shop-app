@@ -148,7 +148,7 @@ final class AuthManager: ObservableObject {
         KeychainHelper.save(String(expiry), for: .supabaseTokenExpiry)
     }
 
-    private func credentialState(for userID: String) async -> ASAuthorizationAppleIDProviderCredentialState {
+    private func credentialState(for userID: String) async -> ASAuthorizationAppleIDProvider.CredentialState {
         await withCheckedContinuation { continuation in
             ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userID) { state, _ in
                 continuation.resume(returning: state)

@@ -12,7 +12,7 @@ final class LocationService: NSObject, ObservableObject {
     /// A shop region covers the shop and the sidewalk outside it.
     static let regionRadius: CLLocationDistance = 100
 
-    @Published private(set) var authorizationStatus: CLAuthorizationStatus = CLLocationManager.authorizationStatus
+    @Published private(set) var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @Published private(set) var lastLocation: CLLocation?
 
     /// Called with the shop id when the user enters a monitored shop region.
@@ -27,6 +27,7 @@ final class LocationService: NSObject, ObservableObject {
     override init() {
         super.init()
         manager.delegate = self
+        authorizationStatus = manager.authorizationStatus
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     }
 
